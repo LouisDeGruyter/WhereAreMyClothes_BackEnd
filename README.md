@@ -2,7 +2,7 @@
 
 - Student: Louis De Gruyter
 - Studentennummer: xxxxxxxxx
-- E-mailadres: voornaam.naam@student.hogent.be
+- E-mailadres: louis.degruyter@student.hogent.be
 
 ## Vereisten
 

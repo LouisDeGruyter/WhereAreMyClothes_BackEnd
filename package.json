@@ -1,4 +1,6 @@
 {
+  "name":"webservices Louis De Gruyter",
+  "version":"1.0",
   "scripts": {
     "start": "npx env-cmd nodemon src/index.js"
   },

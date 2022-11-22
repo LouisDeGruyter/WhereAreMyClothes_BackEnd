@@ -1,16 +1,23 @@
 let {KLEDING,KLEERKASTEN} = require('../data/mock-data');
-
+const {getLogger} = require('../core/logging');
+const debugLog = (message, meta = {}) => {
+    if(!this.logger) this.logger= getLogger();
+    this.logger.debug(message, meta);
+};
 const getAll=()=>{
+    debugLog('Alle kledingstukken worden opgehaald');
     return {items:KLEDING, count:KLEDING.length};
 };
 
 
 const getKledingstukById=(id)=>{
+    debugLog(`Kledingstuk met id ${id} wordt opgehaald`);
     return KLEDING.find(kledingstuk => kledingstuk.id === parseInt(id));
 
 };
 
 const create = ({color, type, size,kleerkastId}) => {
+    debugLog(`Kledingstuk met kleur ${color}, type ${type}, grootte ${size} en kleerkastId ${kleerkastId} wordt toegevoegd`);
     let existingKleerkast;
     if(kleerkastId){
         existingKleerkast = KLEERKASTEN.find(kleerkast => kleerkast.id === kleerkastId);
@@ -36,6 +43,7 @@ const newKledingStuk = {
  return newKledingStuk;
 };
 const updateKledingStukById = (id, {color, type, size,kleerkastId}) => {
+    debugLog(`Kledingstuk met id ${id} wordt geupdate`);
     let existingKleerkast;
     if(kleerkastId){
         existingKleerkast = KLEERKASTEN.find(kleerkast => kleerkast.id === kleerkastId);
@@ -57,6 +65,7 @@ const updateKledingStukById = (id, {color, type, size,kleerkastId}) => {
     return kledingstuk;
 };
 const deleteById = (id) => {
+    debugLog(`Kledingstuk met id ${id} wordt verwijderd`);
     KLEDING = KLEDING.filter(kledingstuk => kledingstuk.id !== parseInt(id));
 };
 

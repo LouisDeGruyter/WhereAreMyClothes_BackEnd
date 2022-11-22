@@ -1,10 +1,11 @@
 {
-  "name":"webservices Louis De Gruyter",
-  "version":"1.0",
+  "name": "webservices-Louis-De-Gruyter",
+  "version": "1.0",
   "scripts": {
     "start": "npx env-cmd nodemon src/index.js"
   },
   "dependencies": {
+    "@koa/cors": "^4.0.0",
     "@koa/router": "^12.0.0",
     "config": "^3.3.8",
     "env-cmd": "^10.1.0",

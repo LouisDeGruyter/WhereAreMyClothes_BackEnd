@@ -1,17 +1,36 @@
-const Koa = require('koa'); // import Koa from 'koa';
-const { getLogger} = require('./core/logging'); // import {getLogger} from './core/logging';
-const config = require('config'); // import config from './config';
-const bodyParser = require('koa-bodyparser'); // import bodyParser from 'koa-bodyparser';
-const Router = require('@koa/router'); // import Router from 'koa-router';
-const installRest = require('./rest/index'); // import installRest from './rest';
+const Koa = require('koa');
+const { initializeLogger,getLogger} = require('./core/logging'); 
+const config = require('config'); 
+const bodyParser = require('koa-bodyparser'); 
+const installRest = require('./rest/index'); 
+const koaCors = require('@koa/cors'); 
 
-const logger = getLogger(); // nieuwe logger
-const NODE_ENV = config.get('env'); // haal de NODE_ENV op uit de config
-const LOG_LEVEL = config.get('log.level'); // loglevel uit config halen
-const LOG_DISABLED = config.get('log.disabled'); // logdisabled uit config halen
-logger.info(`${NODE_ENV} - level: ${LOG_LEVEL}, disabled:${LOG_DISABLED}`); 
+
+const NODE_ENV = config.get('env'); 
+const LOG_LEVEL = config.get('log.level');
+const LOG_DISABLED = config.get('log.disabled'); 
+const CORS_ORIGINS= config.get('cors.origins'); 
+const CORS_MAX_AGE = config.get('cors.maxAge'); 
+
+initializeLogger({
+    level: LOG_LEVEL,
+    disabled: LOG_DISABLED,
+    defaultMeta: { env: NODE_ENV },
+});
 
 const app = new Koa(); // nieuwe koa applicatie
+
+const logger = getLogger(); 
+app.use(koaCors({ // cors toevoegen aan de applicatie
+    origin:(ctx) => {
+        if(CORS_ORIGINS.indexOf(ctx.request.header.origin) !== -1){
+            return ctx.request.header.origin;
+            }
+        return CORS_ORIGINS[0];
+         },
+         allowHeaders: ['Accept', 'Content-Type', 'Authorization'],
+         maxAge: CORS_MAX_AGE,
+         } ));
 app.use(bodyParser()); // bodyparser toevoegen aan de applicatie
 installRest(app); // rest toevoegen aan de applicatie
 

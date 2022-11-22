@@ -1,8 +1,6 @@
-# Examenopdracht Front-end Web Development / Web Services
+# Examenopdracht Web Services
 
-> Schrap hierboven wat niet past
-
-- Student: VOORNAAM NAAM
+- Student: Louis De Gruyter
 - Studentennummer: xxxxxxxxx
 - E-mailadres: voornaam.naam@student.hogent.be
 

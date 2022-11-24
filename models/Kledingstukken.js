@@ -31,6 +31,22 @@ module.exports = (sequelize, DataTypes) => {
                 NotEmpty: true
             }
         },
+        kleerkastId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            validate: {
+                NotEmpty: true
+            }
+        },
+        userId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            validate: {
+                NotEmpty: true
+            }
+        }
+        
+
 
  });
     return Kledingstuk;

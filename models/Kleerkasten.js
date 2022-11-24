@@ -1,16 +1,14 @@
 const { sequelize,DataTypes } = require(".");
 module.exports = (sequelize, DataTypes) => {
-
-    const Kledingstuk = sequelize.define('Kledingstuk', {
-        
-        brand: {
+    const Kleerkast = sequelize.define('Kleerkast', {
+        name: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 NotEmpty: true
             }
         },
-        type: {
+        location: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
@@ -23,15 +21,7 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 NotEmpty: true
             }
-        },
-        size: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            validate: {
-                NotEmpty: true
-            }
-        },
-
- });
-    return Kledingstuk;
+        }
+    });
+    return Kleerkast;
 };

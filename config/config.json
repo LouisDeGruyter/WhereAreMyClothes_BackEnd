@@ -8,17 +8,19 @@
     "dialect": "mysql"
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
+    "username": "180978ld",
+    "password": "sfhay2uXYVZarLqM3fv9",
+    "database": "180978ld",
+    "host": "vichogent.be",
+    "port": "40043",
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "username": "180978ld",
+    "password": "sfhay2uXYVZarLqM3fv9",
+    "database": "180978ld",
+    "host": "vichogent.be",
+    "port": "40043",
     "dialect": "mysql"
   }
 }

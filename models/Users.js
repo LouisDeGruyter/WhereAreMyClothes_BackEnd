@@ -1,37 +1,30 @@
-const { sequelize,DataTypes } = require(".");
+const {
+    sequelize,
+    DataTypes
+} = require(".");
 module.exports = (sequelize, DataTypes) => {
-
-    const Kledingstuk = sequelize.define('Kledingstuk', {
-        
-        brand: {
+    const User = sequelize.define('User', {
+        username: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 NotEmpty: true
             }
         },
-        type: {
+        password: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 NotEmpty: true
             }
         },
-        color: {
+        email: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 NotEmpty: true
             }
-        },
-        size: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            validate: {
-                NotEmpty: true
-            }
-        },
-
- });
-    return Kledingstuk;
-};
+        }
+    });
+    return User;
+}

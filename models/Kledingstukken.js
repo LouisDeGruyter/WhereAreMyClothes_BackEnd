@@ -1,8 +1,7 @@
-const { sequelize,DataTypes } = require(".");
 module.exports = (sequelize, DataTypes) => {
 
-    const Kledingstuk = sequelize.define('Kledingstuk', {
-        
+    const Kledingstuk = sequelize.define('Kledingstukken', {
+
         brand: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -24,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
                 NotEmpty: true
             }
         },
+
         size: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -44,10 +44,11 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 NotEmpty: true
             }
-        }
+        },
+    },
+        {
+            freezeTableName: true,
+        });
         
-
-
- });
     return Kledingstuk;
 };

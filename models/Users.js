@@ -1,9 +1,5 @@
-const {
-    sequelize,
-    DataTypes
-} = require(".");
 module.exports = (sequelize, DataTypes) => {
-    const User = sequelize.define('User', {
+    const User = sequelize.define('Users', {
         username: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -25,6 +21,9 @@ module.exports = (sequelize, DataTypes) => {
                 NotEmpty: true
             }
         }
+    },
+    {
+        freezeTableName: true,
     });
     return User;
 }

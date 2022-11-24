@@ -4,7 +4,7 @@ const config = require('config');
 const bodyParser = require('koa-bodyparser'); 
 const installRest = require('./rest/index'); 
 const koaCors = require('@koa/cors'); 
-const db = require('../models');
+const {initializeDatabase} = require('../models');
 
 const NODE_ENV = config.get('env'); 
 const LOG_LEVEL = config.get('log.level');
@@ -12,14 +12,6 @@ const LOG_DISABLED = config.get('log.disabled');
 const CORS_ORIGINS= config.get('cors.origins'); 
 const CORS_MAX_AGE = config.get('cors.maxAge');
  
-db.sequelize.sync().then((require) => {
-    console.log('Database & tables created!');
-    app.listen(9000, () => {
-        logger.info('server gestart op poort 9000'); 
-});
-});
-
-
 initializeLogger({
     level: LOG_LEVEL,
     disabled: LOG_DISABLED,
@@ -27,8 +19,8 @@ initializeLogger({
 });
 
 const app = new Koa(); // nieuwe koa applicatie
+const logger = getLogger();
 
-const logger = getLogger(); 
 app.use(koaCors({ // cors toevoegen aan de applicatie
     origin:(ctx) => {
         if(CORS_ORIGINS.indexOf(ctx.request.header.origin) !== -1){
@@ -41,6 +33,11 @@ app.use(koaCors({ // cors toevoegen aan de applicatie
          } ));
 app.use(bodyParser()); // bodyparser toevoegen aan de applicatie
 installRest(app); // rest toevoegen aan de applicatie
+app.listen(9000, () => {
+    logger.info('server gestart op poort 9000'); 
+});
+initializeDatabase();
+
 
 
 

@@ -9,7 +9,13 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
+const {getLogger} = require('../src/core/logging');
 let sequelize;
+
+const debugLog= (message,meta = {})=> {
+  if(!this.logger) this.logger = getLogger();
+  this.logger.debug(message,meta);
+};
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
@@ -31,8 +37,14 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
-
+const initializeDatabase = async () => {
+  await db.sequelize.sync({alter: true}).then((require) => {
+    debugLog('Database initialized');
+}).catch((error) => {
+  debugLog(error);
+});
+}
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+module.exports = {initializeDatabase,db};

@@ -1,6 +1,5 @@
-const { sequelize,DataTypes } = require(".");
 module.exports = (sequelize, DataTypes) => {
-    const Kleerkast = sequelize.define('Kleerkast', {
+    const Kleerkast = sequelize.define('Kleerkasten', {
         name: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -22,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
                 NotEmpty: true
             }
         }
+    }, {
+        
+        freezeTableName: true,
     });
+
     return Kleerkast;
 };

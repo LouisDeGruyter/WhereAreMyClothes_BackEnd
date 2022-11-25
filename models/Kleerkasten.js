@@ -3,23 +3,14 @@ module.exports = (sequelize, DataTypes) => {
         name: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: {
-                NotEmpty: true
-            }
         },
         location: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: {
-                NotEmpty: true
-            }
         },
         color: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: {
-                NotEmpty: true
-            }
         }
     }, {
         

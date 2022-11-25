@@ -36,7 +36,7 @@ installRest(app); // rest toevoegen aan de applicatie
 app.listen(9000, () => {
     logger.info('server gestart op poort 9000'); 
 });
-initializeDatabase();
+
 
 
 

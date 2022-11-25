@@ -1,6 +1,6 @@
 let {KLEDING,KLEERKASTEN} = require('../data/mock-data');
 const {getLogger} = require('../core/logging');
-const {Kledingstuk} = require('../../models');
+const {models:{kledingstuk}} = require('../../models');
 const debugLog = (message, meta = {}) => {
     if(!this.logger) this.logger= getLogger();
     this.logger.debug(message, meta);

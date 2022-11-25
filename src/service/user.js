@@ -8,7 +8,7 @@ const getAllUsers= async ()=>{
     
     return await user.findAll().then((users)=>{
         debugLog('Alle gebruikers worden opgehaald');
-            return users;}).catch((error) => {
+            return {users:users,lengte:users.length};}).catch((error) => {
                 debugLog(error);
             });
 };
@@ -62,19 +62,35 @@ const deleteUserById = async(id) => {
             throw new Error(`Gebruiker met id ${id} bestaat niet`);
         }
         const gebruiker = await user.destroy({ where: {id:id}})
+        
         debugLog(`Gebruiker met id ${id} wordt verwijderd`);
         return gebruiker;
     }catch(error){
         debugLog(error);
     }
 };
+const getAllKledingstukkenOfUserById = async(id) => {
+    try{
+        const existingUser = await user.findByPk(id);
+        if(!existingUser){
+            throw new Error(`Gebruiker met id ${id} bestaat niet`);
+        }
+        const kledingstukken = await kledingstuk.findAll({where:{userId:id}});
+        debugLog(`Kledingstukken van gebruiker met id ${id} worden opgehaald`);
+        return {kledingstukken:kledingstukken,lengte:kledingstukken.length};
+    }catch(error){
+        debugLog(error);
+    }
+};
+
 
 module.exports = {
     getAllUsers,
     getUserById,
     createUser,
     updateUserById,
-    deleteUserById
+    deleteUserById,
+    getAllKledingstukkenOfUserById
 };
 
 

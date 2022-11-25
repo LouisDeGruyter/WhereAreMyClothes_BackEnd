@@ -1,5 +1,6 @@
  const {getLogger} = require('../core/logging');
  const {models:{kledingstuk,user,kleerkast}} = require('../../models');
+const kledingstukken = require('../../models/kledingstukken');
 const debugLog = (message, meta = {}) => {
     if(!this.logger) this.logger= getLogger();
     this.logger.debug(message, meta);
@@ -8,7 +9,7 @@ const debugLog = (message, meta = {}) => {
  const getAll = async() => {
         return await kleerkast.findAll().then((kleerkasten)=>{
             debugLog('Alle kleerkasten worden opgehaald');
-            return kleerkasten;}
+            return {kleerkasten:kleerkasten, lengte:kleerkasten.length};}
         ).catch((error) => {
             debugLog(error);
         });
@@ -47,8 +48,10 @@ const debugLog = (message, meta = {}) => {
         if(!kleerkastById){
             throw new Error(`kleerkast met id ${kleerkastId} bestaat niet`);
         }
-        debugLog(`Kledingstukken van kleerkast met id ${kleerkastId} worden opgehaald`);
-        // to be implemented
+        const kledingstukken= await kledingstuk.findAll({where:{kleerkastId:kleerkastId}})
+            debugLog(`Kledingstukken van kleerkast met id ${kleerkastId} worden opgehaald`);
+            return {kledingstukken: kledingstukken, lengte: kledingstukken.length};
+        
        }catch(error){
            debugLog(error);
        }
@@ -61,6 +64,10 @@ const debugLog = (message, meta = {}) => {
             let kleerkastById = await kleerkast.findByPk(id);
             if(!kleerkastById){
                 throw new Error(`kleerkast met id ${id} bestaat niet`);
+            }
+            let kledingstukken = await kledingstuk.findAll({where:{kleerkastId:id}});
+            if(kledingstukken){
+                throw new Error(`kleerkast met id ${id} bevat nog kledingstukken`);
             }
             kleerkastById.destroy();
             debugLog(`Kleerkast met id ${id} verwijderen`);

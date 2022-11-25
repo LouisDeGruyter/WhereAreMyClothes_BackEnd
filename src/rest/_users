@@ -21,7 +21,9 @@ const deleteUser = async(ctx) => {
 const getAllUsers = async(ctx) => {
     ctx.body = await userService.getAllUsers();
 };
-
+const getKledingstukkenByUserId = async(ctx) => {
+    ctx.body = await userService.getAllKledingstukkenOfUserById(ctx.params.id);
+};
 module.exports = (app) => {
     const router = new Router({ prefix: '/users'});
     router.get('/', getAllUsers);
@@ -29,6 +31,7 @@ module.exports = (app) => {
     router.post('/', createUser);
     router.put('/:id', updateUser);
     router.delete('/:id', deleteUser);
+    router.get('/:id/kledingstukken', getKledingstukkenByUserId);
     app.use(router.routes()).use(router.allowedMethods());
 }
 

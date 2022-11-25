@@ -8,7 +8,8 @@ const debugLog = (message, meta = {}) => {
 const getAll= async ()=>{
     return await kledingstuk.findAll().then((kledingstukken)=>{
         debugLog('Alle kledingstukken worden opgehaald');
-            return kledingstukken;}).catch((error) => {
+            return {kledingstukken:kledingstukken,lengte:kledingstukken.length};
+        }).catch((error) => {
                 debugLog(error);
             });
 };

@@ -11,8 +11,6 @@ ctx.body = await kledingstukkenService.create({...ctx.request.body});
 };
 
 const getKledingstukById= async(ctx)=>{ // kledingstuk ophalen op basis van id
-console.log(ctx.params.id);
-console.log(kledingstukkenService.getKledingstukById(ctx.params.id));
 ctx.body= await kledingstukkenService.getKledingstukById(ctx.params.id); // id niet geparsed
 };
 

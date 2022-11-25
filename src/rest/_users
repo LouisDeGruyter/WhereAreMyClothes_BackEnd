@@ -1,0 +1,34 @@
+const Router = require('@koa/router');
+const userService = require('../service/user');
+
+const getUser = async(ctx) => {
+    ctx.body = await userService.getUserById(ctx.params.id);
+};
+
+const createUser = async(ctx) => {
+    ctx.body = await userService.createUser(ctx.request.body);
+};
+
+const updateUser = async(ctx) => {
+    ctx.body = await userService.updateUserById(ctx.params.id, ctx.request.body);
+};
+
+const deleteUser = async(ctx) => {
+    ctx.body = await userService.deleteUserById(ctx.params.id);
+    ctx.status = 204;
+};
+
+const getAllUsers = async(ctx) => {
+    ctx.body = await userService.getAllUsers();
+};
+
+module.exports = (app) => {
+    const router = new Router({ prefix: '/users'});
+    router.get('/', getAllUsers);
+    router.get('/:id', getUser);
+    router.post('/', createUser);
+    router.put('/:id', updateUser);
+    router.delete('/:id', deleteUser);
+    app.use(router.routes()).use(router.allowedMethods());
+}
+

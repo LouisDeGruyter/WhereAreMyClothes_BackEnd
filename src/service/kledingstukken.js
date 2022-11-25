@@ -1,81 +1,94 @@
 let {KLEDING,KLEERKASTEN} = require('../data/mock-data');
 const {getLogger} = require('../core/logging');
-const {models:{kledingstuk}} = require('../../models');
+const {models:{kledingstuk,user,kleerkast}} = require('../../models');
 const debugLog = (message, meta = {}) => {
     if(!this.logger) this.logger= getLogger();
     this.logger.debug(message, meta);
 };
-const getAll=()=>{
-    debugLog('Alle kledingstukken worden opgehaald');
-    return kledingstuk.findAll().then((kledingstukken)=>{
+const getAll= async ()=>{
+    return await kledingstuk.findAll().then((kledingstukken)=>{
+        debugLog('Alle kledingstukken worden opgehaald');
             return kledingstukken;}).catch((error) => {
                 debugLog(error);
             });
 };
 
 
-const getKledingstukById=(id)=>{
-    debugLog(`Kledingstuk met id ${id} wordt opgehaald`);
-    return KLEDING.find(kledingstuk => kledingstuk.id === parseInt(id));
-
+const getKledingstukById=async(id)=>{
+    try{
+        let kledingstukById = await kledingstuk.findByPk(id);
+        if(!kledingstukById){
+            throw new Error(`kledingstuk met id ${id} bestaat niet`);
+        }
+        debugLog(`Kledingstuk met id ${id} wordt opgehaald`);
+        return kledingstukById;
+    }
+    catch(error){
+        debugLog(error);
+    }
 };
-
 const  create =async ({brand,color, type, size,kleerkastId,userId}) => {
-    debugLog(`Kledingstuk met merk ${brand}, kleur ${color}, type ${type}, grootte ${size}, kleerkastId ${kleerkastId}n userId ${userId} wordt toegevoegd`);
-//     let existingKleerkast;
-//     if(kleerkastId){
-//         existingKleerkast = KLEERKASTEN.find(kleerkast => kleerkast.id === kleerkastId);
-//     }
-//     if(!existingKleerkast){
-//         throw new Error(`kleerkast met id ${kleerkastId} bestaat niet`);
-//     }
-// //     if( typeof user ==='string'){
-// //         user={
-// //         id: Math.floor(Math.random() * 100000),
-// //         name:user
-// //     }
-// // }
-try{ const kleding = await kledingstuk.create({ brand:brand,color:color, type:type, size:size,kleerkastId:kleerkastId,userId:userId})
-    return kleding;
-}catch(error){
-    debugLog(error);
-}
-
-
-// const newKledingStuk = {
-//     id: Math.max(...KLEDING.map(kledingstuk => kledingstuk.id)) + 1, // id van het laatste kledingstuk + 1
-//     color,
-//     type,
-//     size,
-//     kleerkast: existingKleerkast, 
-// }
-//  KLEDING= [...KLEDING, newKledingStuk];
+    try{
+        let existingKleerkast = await kleerkast.findByPk(kleerkastId);
+        if(!existingKleerkast){
+            throw new Error(`kleerkast met id ${kleerkastId} bestaat niet`);
+        }
+        let existingUser = await user.findByPk(userId);
+        if(!existingUser){
+            throw new Error(`user met id ${userId} bestaat niet`);
+        }
+        let newKledingstuk = await kledingstuk.create({brand,color, type, size,kleerkastId,userId});
+        debugLog(`Kledingstuk met id ${newKledingstuk.id} wordt aangemaakt`);
+        return newKledingstuk;
+    }
+    catch(error){
+        debugLog(error);
+    }
 };
-const updateKledingStukById = (id, {color, type, size,kleerkastId}) => {
-    debugLog(`Kledingstuk met id ${id} wordt geupdate`);
-    let existingKleerkast;
-    if(kleerkastId){
-        existingKleerkast = KLEERKASTEN.find(kleerkast => kleerkast.id === kleerkastId);
+   
+const updateKledingStukById = async(id, {brand,color, type, size,kleerkastId,userId}) => {
+    try{
+        let kledingstukById = await kledingstuk.findByPk(id);
+        if(!kledingstukById){
+            throw new Error(`kledingstuk met id ${id} bestaat niet`);
+        }
+        let existingKleerkast = await kleerkast.findByPk(kleerkastId);
+        if(!existingKleerkast){
+            throw new Error(`kleerkast met id ${kleerkastId} bestaat niet`);
+        }
+       
+        if(userId){
+            let existingUser = await user.findByPk(userId);
+            if(!existingUser){
+                throw new Error(`user met id ${userId} bestaat niet`);
+                
+        }  
+        kledingstukById.userId = userId;   
+        }
+        kledingstukById.color = color;
+        kledingstukById.type = type;
+        kledingstukById.size = size;
+        kledingstukById.kleerkastId = kleerkastId;
+        kledingstukById.brand=brand;
+        await kledingstukById.save();
+        
+        debugLog(`Kledingstuk met id ${id} updaten`);
+        return kledingstukById;
+    } catch(error){
+        debugLog(error);
     }
-    if(!existingKleerkast){
-        throw new Error(`kleerkast met id ${kleerkastId} bestaat niet`);
-    }
-    let kledingstuk = KLEDING.find(kledingstuk => kledingstuk.id === parseInt(id));
-    if(!kledingstuk){
-        throw new Error(`kledingstuk met id ${id} bestaat niet`);
-    }
-    kledingstuk.color = color;
-    kledingstuk.type = type;
-    kledingstuk.size = size;
-    kledingstuk.kleerkast = existingKleerkast;
-    // if(user){
-    //     kledingstuk.user.name = user;
-    // }
-    return kledingstuk;
 };
-const deleteById = (id) => {
-    debugLog(`Kledingstuk met id ${id} wordt verwijderd`);
-    KLEDING = KLEDING.filter(kledingstuk => kledingstuk.id !== parseInt(id));
+const deleteById = async (id) => {
+    try{
+        let kledingstukById = await kledingstuk.findByPk(id);
+        if(!kledingstukById){
+            throw new Error(`kledingstuk met id ${id} bestaat niet`);
+        }
+        return kledingstukById.destroy();
+    } catch(error){
+        debugLog(error);
+    }
+   
 };
 
 module.exports = {

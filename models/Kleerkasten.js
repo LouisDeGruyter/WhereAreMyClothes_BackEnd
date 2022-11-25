@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     const Kleerkast = sequelize.define('Kleerkasten', {
+        kleerkastId: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
         name: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -8,10 +13,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        color: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        }
     }, {
         
         freezeTableName: true,

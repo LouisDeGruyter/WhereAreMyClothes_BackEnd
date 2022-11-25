@@ -1,63 +1,89 @@
- let {KLEERKASTEN,KLEDING} = require('../data/mock-data');
  const {getLogger} = require('../core/logging');
+ const {models:{kledingstuk,user,kleerkast}} = require('../../models');
 const debugLog = (message, meta = {}) => {
     if(!this.logger) this.logger= getLogger();
     this.logger.debug(message, meta);
 };
  //ophalen van alle kleerkasten
-    const getAll = () => {
-        debugLog("Alle kleerkasten ophalen");
-        return {items:KLEERKASTEN, count:KLEERKASTEN.length};
+ const getAll = async() => {
+        return await kleerkast.findAll().then((kleerkasten)=>{
+            debugLog('Alle kleerkasten worden opgehaald');
+            return kleerkasten;}
+        ).catch((error) => {
+            debugLog(error);
+        });
     };
+    
     //ophalen van een kleerkast op basis van id
-    const getKleerkastById = (id) => {
-        debugLog(`Kleerkast met id ${id} ophalen`);
-        let kleerkastMetId = KLEERKASTEN.find(kleerkast => kleerkast.id === parseInt(id));
-        if(!kleerkastMetId){
+    const getKleerkastById = async(id) => {
+        try{
+            let kleerkastById = await kleerkast.findByPk(id);
+        if(!kleerkastById){
             throw new Error(`kleerkast met id ${id} bestaat niet`);
         }
-        return kleerkastMetId;
+            debugLog(`Kleerkast met id ${id} wordt opgehaald`);
+            return kleerkastById;
+        }
+        catch(error){
+            debugLog(error);
+        }
     };
     //update kleerkast op basis van id
-    const updateKleerkast = (id, {name,location}) => {
-        debugLog(`Kleerkast met id ${id} updaten`);
-        let kleerkast = KLEERKASTEN.find(kleerkast => kleerkast.id === parseInt(id));
-        if(!kleerkast){
+    const updateKleerkastById = async (id, {name,location}) => {
+        
+        let kleerkastById = await kleerkast.findByPk(id);
+        if(!kleerkastById){
             throw new Error(`kleerkast met id ${id} bestaat niet`);
         }
-        kleerkast.name = name;
-        kleerkast.location = location;
-        return kleerkast;
+        kleerkastById.name = name;
+        kleerkastById.location = location;
+        debugLog(`Kleerkast met id ${id} updaten`);
+        return await kleerkastById.save();
     };
     //ophalen van alle kledingstukken van een kleerkast
-    const getKledingstukkenByKleerkastId = (kleerkastId) => {
-        debugLog(`Kledingstukken van kleerkast met id ${kleerkastId} ophalen`);
-        let kleerkast = KLEERKASTEN.find(kleerkast => kleerkast.id === parseInt(kleerkastId));
-        if(!kleerkast){
+    const getKledingstukkenByKleerkastId = async(kleerkastId) => {
+       try{
+        let kleerkastById = await kleerkast.findByPk(kleerkastId);
+        if(!kleerkastById){
             throw new Error(`kleerkast met id ${kleerkastId} bestaat niet`);
         }
-        const lijstMetKledingstukken = KLEDING.filter(kledingstuk => kledingstuk.kleerkast.id === parseInt(kleerkastId));
-        return {items:lijstMetKledingstukken, count:lijstMetKledingstukken.length};
+        debugLog(`Kledingstukken van kleerkast met id ${kleerkastId} worden opgehaald`);
+        // to be implemented
+       }catch(error){
+           debugLog(error);
+       }
     };
     
     
     //kleerkast verwijderen op basis van id
-    const deleteById = (id) => {
-        debugLog(`Kleerkast met id ${id} verwijderen`);
-        KLEERKASTEN = KLEERKASTEN.filter(kleerkast => kleerkast.id !== parseInt(id));
-        KLEDING = KLEDING.filter(kledingstuk => kledingstuk.kleerkast.id !== parseInt(id));
+    const deleteById = async (id) => {
+        try{
+            let kleerkastById = await kleerkast.findByPk(id);
+            if(!kleerkastById){
+                throw new Error(`kleerkast met id ${id} bestaat niet`);
+            }
+            kleerkastById.destroy();
+            debugLog(`Kleerkast met id ${id} verwijderen`);
+            return kleerkastById;
+        }catch(error){
+            debugLog(error);
+        }
+       
     };
     //kleerkast toevoegen
-    const create = ({name,location}) => {
-        debugLog(`Kleerkast ${name} en locatie ${location} toevoegen`);
-        const newKleerkast = {
-            id: Math.max(...KLEERKASTEN.map(kleerkast => kleerkast.id)) + 1, // id van de laatste kleerkast + 1
-            name,
-            location,
+    const create = async({name,location}) => {
+        try{
+            const existingKleerkast = await kleerkast.findOne({where:{name,location:location}});
+            if(existingKleerkast){
+                throw new Error(`kleerkast met naam ${name} en locatie ${location} bestaat al`);
+            }
+            const newKleerkast = await kleerkast.create({name,location});
+            debugLog(`Kleerkast ${name} wordt toegevoegd`);
+            return newKleerkast;
+        }catch(error){
+            debugLog(error);
         }
-        KLEERKASTEN = [...KLEERKASTEN, newKleerkast];
-        return newKleerkast;
     };
     module.exports = { 
-        getAll, getKleerkastById, getKledingstukkenByKleerkastId, updateKleerkast, deleteById, create
+        getAll, getKleerkastById, getKledingstukkenByKleerkastId, updateKleerkastById, deleteById, create
     };

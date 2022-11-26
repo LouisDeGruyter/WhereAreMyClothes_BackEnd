@@ -21,7 +21,11 @@ module.exports = {
               allowNull: false,
               unique: true,
           }
-      });
+      },
+      {
+          freezeTableName: true,
+          timestamps: false,
+          });
   },
   down: async (queryInterface, Sequelize) => {
       return await queryInterface.dropTable('Users');

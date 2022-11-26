@@ -64,10 +64,6 @@ const debugLog = (message, meta = {}) => {
             if(!kleerkastById){
                 throw new Error(`kleerkast met id ${id} bestaat niet`);
             }
-            let kledingstukken = await kleerkastById.getKledingstukken();
-            if(kledingstukken){
-                throw new Error(`kleerkast met id ${id} bevat nog kledingstukken`);
-            }
             kleerkastById.destroy();
             debugLog(`Kleerkast met id ${id} verwijderen`);
             return kleerkastById;

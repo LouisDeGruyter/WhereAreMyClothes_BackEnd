@@ -17,6 +17,7 @@ module.exports = {
       }, {
 
           freezeTableName: true,
+          timestamps: false,
       });
   },
   down: async (queryInterface, Sequelize) => {

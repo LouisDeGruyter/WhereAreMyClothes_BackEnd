@@ -36,7 +36,11 @@ module.exports = {
                   key: 'userId'
               }
           },
-      });
+      },
+      {
+      freezeTableName: true,
+      timestamps: false,
+          });
   },
   down: async (queryInterface, Sequelize) => {
       return await queryInterface.dropTable('Kledingstukken');

@@ -27,6 +27,9 @@ const updateKleerkast = async(ctx) => {
 const getKledingstukkenByKleerkastId = async(ctx) => {
     ctx.body = await kleerkastenService.getKledingstukkenByKleerkastId(ctx.params.id);
 }; 
+const belongsToUser = async(ctx) => {
+    ctx.body = await kleerkastenService.belongsToUser(ctx.params.id);
+};
 
 module.exports = (app) => {
     const router = new Router({prefix: '/kleerkasten'});
@@ -36,5 +39,6 @@ module.exports = (app) => {
     router.delete('/:id', deleteKleerkast);
     router.put('/:id', updateKleerkast);
     router.get('/:id/kledingstukken', getKledingstukkenByKleerkastId);
+    router.get('/:id/user', belongsToUser);
     app.use(router.routes()).use(router.allowedMethods());
 }

@@ -1,5 +1,5 @@
 const {getLogger} = require('../core/logging');
-const {models:{kledingstuk,user,kleerkast}} = require('../../models');
+const {models:{user}} = require('../../models');
 const debugLog = (message, meta = {}) => {
    if(!this.logger) this.logger= getLogger();
    this.logger.debug(message, meta);
@@ -14,7 +14,6 @@ const getAllUsers= async ()=>{
 };
 
 const getUserById=async(id)=>{
-    debugLog(`Gebruiker met id ${id} wordt opgehaald`);
     try{
         const gebruiker = await user.findByPk(id);
         if(!gebruiker){
@@ -62,7 +61,7 @@ const deleteUserById = async(id) => {
             throw new Error(`Gebruiker met id ${id} bestaat niet`);
         }
         const gebruiker = await user.destroy({ where: {id:id}})
-        
+
         debugLog(`Gebruiker met id ${id} wordt verwijderd`);
         return gebruiker;
     }catch(error){
@@ -75,9 +74,22 @@ const getAllKledingstukkenOfUserById = async(id) => {
         if(!existingUser){
             throw new Error(`Gebruiker met id ${id} bestaat niet`);
         }
-        const kledingstukken = await kledingstuk.findAll({where:{userId:id}});
+        const kledingstukken = await existingUser.getKledingstukken();
         debugLog(`Kledingstukken van gebruiker met id ${id} worden opgehaald`);
         return {kledingstukken:kledingstukken,lengte:kledingstukken.length};
+    }catch(error){
+        debugLog(error);
+    }
+};
+const getAllKleerkastenOfUserById = async(id) => {
+    try{
+        const existingUser = await user.findByPk(id);
+        if(!existingUser){
+            throw new Error(`Gebruiker met id ${id} bestaat niet`);
+        }
+        const kleerkasten = await existingUser.getKleerkasten();
+        debugLog(`Kleerkasten van gebruiker met id ${id} worden opgehaald`);
+        return {kleerkasten:kleerkasten,lengte:kleerkasten.length};
     }catch(error){
         debugLog(error);
     }
@@ -90,7 +102,8 @@ module.exports = {
     createUser,
     updateUserById,
     deleteUserById,
-    getAllKledingstukkenOfUserById
+    getAllKledingstukkenOfUserById,
+    getAllKleerkastenOfUserById
 };
 
 

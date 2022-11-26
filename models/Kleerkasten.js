@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         
         freezeTableName: true,
+        timestamps: false,
     });
 
     return Kleerkast;

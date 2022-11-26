@@ -24,6 +24,9 @@ const getAllUsers = async(ctx) => {
 const getKledingstukkenByUserId = async(ctx) => {
     ctx.body = await userService.getAllKledingstukkenOfUserById(ctx.params.id);
 };
+const getAllKleerkastenOfUserById = async(ctx) => {
+    ctx.body = await userService.getAllKleerkastenOfUserById(ctx.params.id);
+};
 module.exports = (app) => {
     const router = new Router({ prefix: '/users'});
     router.get('/', getAllUsers);
@@ -32,6 +35,7 @@ module.exports = (app) => {
     router.put('/:id', updateUser);
     router.delete('/:id', deleteUser);
     router.get('/:id/kledingstukken', getKledingstukkenByUserId);
+    router.get('/:id/kleerkasten', getAllKleerkastenOfUserById);
     app.use(router.routes()).use(router.allowedMethods());
 }
 

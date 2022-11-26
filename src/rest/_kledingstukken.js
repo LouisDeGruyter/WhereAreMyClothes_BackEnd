@@ -22,6 +22,13 @@ ctx.status=204; // geen content
 const updateKledingstuk = async(ctx)=>{ // kledingstuk updaten op basis van id
 ctx.body= await kledingstukkenService.updateKledingStukById(ctx.params.id, {...ctx.request.body});
 };
+const belongsToUser = async(ctx)=>{ //gebruiker ophalen op basis van id
+ctx.body= await kledingstukkenService.belongsToUser(ctx.params.id);
+};
+const belongsToKleerkast = async(ctx)=>{ //kleerkast ophalen op basis van id
+ctx.body= await kledingstukkenService.belongsToKleerkast(ctx.params.id);
+};
+
 
 
 module.exports = (app) => {
@@ -31,6 +38,8 @@ router.get('/:id', getKledingstukById);
 router.post('/', createKledingstuk);
 router.delete('/:id', deleteKLedingstuk);
 router.put('/:id', updateKledingstuk);
+router.get('/:id/user', belongsToUser);
+router.get('/:id/kleerkast', belongsToKleerkast);
 
 app.use(router.routes()).use(router.allowedMethods());
 

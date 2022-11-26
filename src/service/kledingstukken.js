@@ -39,7 +39,9 @@ const  create =async ({brand,color, type, size,kleerkastId,userId}) => {
             throw new Error(`user met id ${userId} bestaat niet`);
         }
         let newKledingstuk = await kledingstuk.create({brand,color, type, size,kleerkastId,userId});
-        debugLog(`Kledingstuk met id ${newKledingstuk.id} wordt aangemaakt`);
+        existingKleerkast.addKledingstukken(newKledingstuk);
+        existingUser.addKledingstukken(newKledingstuk);
+        debugLog(`Kledingstuk met merk ${brand}, kleur ${color}, type ${type} en maat ${size} wordt aangemaakt`);
         return newKledingstuk;
     }
     catch(error){
@@ -91,7 +93,34 @@ const deleteById = async (id) => {
     }
    
 };
+const belongsToUser = async (id) => {
+    try{
+        let kledingstukById = await kledingstuk.findByPk(id);
+        if(!kledingstukById){
+            throw new Error(`kledingstuk met id ${id} bestaat niet`);
+        }
+        const user = await kledingstukById.getUser();
+        debugLog(`Kledingstuk met id ${id} hoort bij user met id ${user.id}`);
+        return user;
+    } catch(error){
+        debugLog(error);
+    }
+};
+const belongsToKleerkast = async (id) => {
+    try{
+        let kledingstukById = await kledingstuk.findByPk(id);
+        if(!kledingstukById){
+            throw new Error(`kledingstuk met id ${id} bestaat niet`);
+        }
+        const kleerkast = await kledingstukById.getKleerkast();
+        debugLog(`Kledingstuk met id ${id} hoort bij kleerkast met id ${kleerkast.id}`);
+        return kleerkast;
+    } catch(error){
+        debugLog(error);
+    }
+};
+        
 
 module.exports = {
-    getAll, getKledingstukById, create, updateKledingStukById, deleteById 
+    getAll, getKledingstukById, create, updateKledingStukById, deleteById, belongsToUser, belongsToKleerkast
 };

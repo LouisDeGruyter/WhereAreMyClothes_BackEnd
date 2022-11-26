@@ -25,19 +25,10 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
       
         },
-        kleerkastId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-          
-        },
-        userId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-           
-        },
     },
         {
             freezeTableName: true,
+            timestamps: false,
         });
         
     return Kledingstuk;

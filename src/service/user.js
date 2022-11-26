@@ -1,12 +1,13 @@
 const {getLogger} = require('../core/logging');
 const {models:{user}} = require('../../models');
+const kledingstukken = require('../../models/kledingstukken');
 const debugLog = (message, meta = {}) => {
    if(!this.logger) this.logger= getLogger();
    this.logger.debug(message, meta);
 };
 const getAllUsers= async ()=>{
     
-    return await user.findAll().then((users)=>{
+    return await user.findAll({include: ['kledingstukken','kleerkasten']}).then((users)=>{
         debugLog('Alle gebruikers worden opgehaald');
             return {users:users,lengte:users.length};}).catch((error) => {
                 debugLog(error);
@@ -15,7 +16,7 @@ const getAllUsers= async ()=>{
 
 const getUserById=async(id)=>{
     try{
-        const gebruiker = await user.findByPk(id);
+        const gebruiker = await user.findByPk(id,{include: ['kledingstukken','kleerkasten']});
         if(!gebruiker){
             throw new Error(`Gebruiker met id ${id} bestaat niet`);
         }

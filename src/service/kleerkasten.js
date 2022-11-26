@@ -6,7 +6,7 @@ const debugLog = (message, meta = {}) => {
 };
  //ophalen van alle kleerkasten
  const getAll = async() => {
-        return await kleerkast.findAll().then((kleerkasten)=>{
+        return await kleerkast.findAll({include:['kledingstukken']}).then((kleerkasten)=>{
             debugLog('Alle kleerkasten worden opgehaald');
             return {kleerkasten:kleerkasten, lengte:kleerkasten.length};}
         ).catch((error) => {
@@ -17,7 +17,7 @@ const debugLog = (message, meta = {}) => {
     //ophalen van een kleerkast op basis van id
     const getKleerkastById = async(id) => {
         try{
-            let kleerkastById = await kleerkast.findByPk(id);
+            let kleerkastById = await kleerkast.findByPk(id,{include:['kledingstukken']});
         if(!kleerkastById){
             throw new Error(`kleerkast met id ${id} bestaat niet`);
         }

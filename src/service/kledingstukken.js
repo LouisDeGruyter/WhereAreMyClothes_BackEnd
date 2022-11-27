@@ -112,9 +112,9 @@ const belongsToKleerkast = async (id) => {
         if(!kledingstukById){
             throw new Error(`kledingstuk met id ${id} bestaat niet`);
         }
-        const kleerkast = await kledingstukById.getKleerkast();
-        debugLog(`Kledingstuk met id ${id} hoort bij kleerkast met id ${kleerkast.id}`);
-        return kleerkast;
+        const kleerkast1 = await kledingstukById.getKleerkast();
+        debugLog(`Kledingstuk met id ${id} hoort bij kleerkast met id ${kleerkast1.id}`);
+        return kleerkast1;
     } catch(error){
         debugLog(error);
     }

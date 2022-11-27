@@ -98,9 +98,9 @@ const debugLog = (message, meta = {}) => {
             if(!kleerkastById){
                 throw new Error(`kleerkast met id ${Id} bestaat niet`);
             }
-            const user = await kleerkastById.getUser();
-            debugLog(`Kleerkast met id ${Id} hoort bij user ${user.name}`);
-            return user;
+            const gebruiker = await kleerkastById.getUser();
+            debugLog(`Kleerkast met id ${Id} hoort bij user ${gebruiker.username}`);
+            return gebruiker;
         }catch(error){
             debugLog(error);
         }

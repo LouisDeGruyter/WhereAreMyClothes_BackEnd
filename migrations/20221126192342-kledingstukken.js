@@ -6,18 +6,21 @@ module.exports = {
               primaryKey: true,
               autoIncrement: true
           },
-          name: {
+          brand: {
               type: Sequelize.STRING,
               allowNull: false,
 
           },
-          kleur: {
+          type: {
               type: Sequelize.STRING,
               allowNull: false,
-
           },
-          maat: {
+          color: {
               type: Sequelize.STRING,
+              allowNull: false,
+          },
+          size: {
+              type: Sequelize.INTEGER,
               allowNull: false,
           },
           kleerkastId: {

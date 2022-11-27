@@ -29,17 +29,33 @@ const debugLog = (message, meta = {}) => {
         }
     };
     //update kleerkast op basis van id
-    const updateKleerkastById = async (id, {name,location}) => {
-        
+    const updateKleerkastById = async (id, {name,location,userId}) => {
+    try{
         let kleerkastById = await kleerkast.findByPk(id);
         if(!kleerkastById){
             throw new Error(`kleerkast met id ${id} bestaat niet`);
         }
+        let existingUser = await user.findByPk(userId);
+        if(!existingUser){
+            throw new Error(`Gebruiker met id ${userId} bestaat niet`);
+        }
+        let eigenaar = await kleerkastById.getUser();
+        if(eigenaar.id !== userId){
+            eigenaar.removeKleerkasten(kleerkastById);
+            let nieuweEigenaar = await user.findByPk(userId);
+            nieuweEigenaar.addKleerkasten(kleerkastById);
+
+        }
         kleerkastById.name = name;
         kleerkastById.location = location;
+        kleerkastById.userId = userId;
         debugLog(`Kleerkast met id ${id} updaten`);
         return await kleerkastById.save();
-    };
+    }catch(error){
+        debugLog(error);
+    }
+};
+
     //ophalen van alle kledingstukken van een kleerkast
     const getKledingstukkenByKleerkastId = async(kleerkastId) => {
        try{

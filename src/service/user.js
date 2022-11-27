@@ -1,5 +1,5 @@
 const {getLogger} = require('../core/logging');
-const {models:{user}} = require('../../models');
+const {models:{user,kleerkast,kledingstuk}} = require('../../models');
 const kledingstukken = require('../../models/kledingstukken');
 const debugLog = (message, meta = {}) => {
    if(!this.logger) this.logger= getLogger();
@@ -7,7 +7,7 @@ const debugLog = (message, meta = {}) => {
 };
 const getAllUsers= async ()=>{
     
-    return await user.findAll({include: ['kledingstukken','kleerkasten']}).then((users)=>{
+    return await user.findAll({include: [{model:kleerkast, as:'kleerkasten',include:[{model:kledingstuk, as:"kledingstukken"}]}]}).then((users)=>{
         debugLog('Alle gebruikers worden opgehaald');
             return {users:users,lengte:users.length};}).catch((error) => {
                 debugLog(error);
@@ -16,7 +16,7 @@ const getAllUsers= async ()=>{
 
 const getUserById=async(id)=>{
     try{
-        const gebruiker = await user.findByPk(id,{include: ['kledingstukken','kleerkasten']});
+        const gebruiker = await user.findByPk({include: [{model:kleerkast, as:'kleerkasten',include:[{model:kledingstuk, as:"kledingstukken"}]}]});
         if(!gebruiker){
             throw new Error(`Gebruiker met id ${id} bestaat niet`);
         }
@@ -75,7 +75,15 @@ const getAllKledingstukkenOfUserById = async(id) => {
         if(!existingUser){
             throw new Error(`Gebruiker met id ${id} bestaat niet`);
         }
-        const kledingstukken = await existingUser.getKledingstukken();
+        let kleerkasten = await existingUser.getKleerkasten();
+        let kledingstukken=[];
+        for(let i=0;i<kleerkasten.length;i++){
+            let kledingstukkenVanKleerkast = await kleerkasten[i].getKledingstukken();
+            for(let j=0;j<kledingstukkenVanKleerkast.length;j++){
+                kledingstukken.push(kledingstukkenVanKleerkast[j]);
+            }
+        }
+
         debugLog(`Kledingstukken van gebruiker met id ${id} worden opgehaald`);
         return {kledingstukken:kledingstukken,lengte:kledingstukken.length};
     }catch(error){

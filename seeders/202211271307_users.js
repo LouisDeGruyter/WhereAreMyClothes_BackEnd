@@ -1,10 +1,10 @@
 'use strict';
-const faker=require('faker');
+const {faker} = require('@faker-js/faker');
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
         const users = [];
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 3; i++) {
             users.push({
                 username: faker.name.firstName(),
                 password: faker.internet.password(),

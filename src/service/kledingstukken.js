@@ -28,23 +28,14 @@ const getKledingstukById=async(id)=>{
         debugLog(error);
     }
 };
-const  create =async ({brand,color, type, size,kleerkastId,userId}) => {
+const  create =async ({brand,color, type, size,kleerkastId}) => {
     try{
         let existingKleerkast = await kleerkast.findByPk(kleerkastId);
         if(!existingKleerkast){
             throw new Error(`kleerkast met id ${kleerkastId} bestaat niet`);
         }
-        let existingUser = await user.findByPk(userId);
-        if(!existingUser){
-            throw new Error(`user met id ${userId} bestaat niet`);
-        }
-        let eigenaar = await existingKleerkast.getUser();
-        if(existingUser.userId!= eigenaar.userId){
-            throw new Error(`user met id ${userId} is niet de eigenaar van kleerkast maar user met id ${eigenaar.userId} is de eigenaar`);
-        }
-        let newKledingstuk = await kledingstuk.create({brand,color, type, size,kleerkastId,userId});
+        let newKledingstuk = await kledingstuk.create({brand,color, type, size,kleerkastId});
         existingKleerkast.addKledingstukken(newKledingstuk);
-        existingUser.addKledingstukken(newKledingstuk);
         debugLog(`Kledingstuk met merk ${brand}, kleur ${color}, type ${type} en maat ${size} wordt aangemaakt`);
         return newKledingstuk;
     }
@@ -53,7 +44,7 @@ const  create =async ({brand,color, type, size,kleerkastId,userId}) => {
     }
 };
    
-const updateKledingStukById = async(id, {brand,color, type, size,kleerkastId,userId}) => {
+const updateKledingStukById = async(id, {brand,color, type, size,kleerkastId}) => {
     try{
         let kledingstukById = await kledingstuk.findByPk(id);
         if(!kledingstukById){
@@ -63,20 +54,16 @@ const updateKledingStukById = async(id, {brand,color, type, size,kleerkastId,use
         if(!existingKleerkast){
             throw new Error(`kleerkast met id ${kleerkastId} bestaat niet`);
         }
-       
-        if(userId){
-            let existingUser = await user.findByPk(userId);
-            if(!existingUser){
-                throw new Error(`user met id ${userId} bestaat niet`);
-                
-        }  
-        kledingstukById.userId = userId;   
+        let huidigeKleerkast = await kledingstukById.getKleerkast();
+        if(huidigeKleerkast.id != kleerkastId){
+            huidigeKleerkast.removeKledingstukken(kledingstukById);
+            existingKleerkast.addKledingstukken(kledingstukById);
         }
+        kledingstukById.brand = brand;
         kledingstukById.color = color;
         kledingstukById.type = type;
         kledingstukById.size = size;
         kledingstukById.kleerkastId = kleerkastId;
-        kledingstukById.brand=brand;
         await kledingstukById.save();
         
         debugLog(`Kledingstuk met id ${id} updaten`);
@@ -103,7 +90,7 @@ const belongsToUser = async (id) => {
         if(!kledingstukById){
             throw new Error(`kledingstuk met id ${id} bestaat niet`);
         }
-        const user = await kledingstukById.getUser();
+        const user = await kledingstukById.getKleerkast().getUser();
         debugLog(`Kledingstuk met id ${id} hoort bij user met id ${user.id}`);
         return user;
     } catch(error){

@@ -31,14 +31,6 @@ module.exports = {
                   key: 'kleerkastId'
               }
           },
-          userId: {
-              type: Sequelize.INTEGER,
-              allowNull: false,
-              references: {
-                  model: 'Users',
-                  key: 'userId'
-              }
-          },
       },
       {
       freezeTableName: true,

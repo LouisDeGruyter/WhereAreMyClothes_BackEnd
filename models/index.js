@@ -42,9 +42,9 @@ const user = db.models.user;
 const kledingstuk = db.models.kledingstuk;
 const kleerkast = db.models.kleerkast;
 
-kleerkast.hasMany(kledingstuk, { foreignKey: 'kledingstukId' , as:"kledingstukken", onDelete: 'cascade'});
-user.hasMany(kledingstuk, { foreignKey: 'kledingstukId' ,as:"kledingstukken", onDelete: 'CASCADE'});
-user.hasMany(kleerkast, { foreignKey: 'kleerkastId' ,as:"kleerkasten", onDelete: 'CASCADE'});
+kleerkast.hasMany(kledingstuk, { foreignKey: 'kleerkastId' , as:"kledingstukken", onDelete: 'cascade'});
+user.hasMany(kledingstuk, { foreignKey: 'userId' ,as:"kledingstukken", onDelete: 'CASCADE'});
+user.hasMany(kleerkast, { foreignKey: 'userId' ,as:"kleerkasten", onDelete: 'CASCADE'});
 kleerkast.belongsTo(user, { foreignKey: 'userId' ,as:"user"});
 kledingstuk.belongsTo(kleerkast, { foreignKey: 'kleerkastId' ,as:"kleerkast"});
 kledingstuk.belongsTo(user, { foreignKey: 'userId' ,as:"user"});

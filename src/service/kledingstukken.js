@@ -90,9 +90,10 @@ const belongsToUser = async (id) => {
         if(!kledingstukById){
             throw new Error(`kledingstuk met id ${id} bestaat niet`);
         }
-        const user = await kledingstukById.getKleerkast().getUser();
-        debugLog(`Kledingstuk met id ${id} hoort bij user met id ${user.id}`);
-        return user;
+        const kleerkast1= await kledingstukById.getKleerkast();
+        const user1 = await kleerkast1.getUser();
+        debugLog(`Kledingstuk met id ${id} hoort bij user met id ${user1.userId}`);
+        return user1;
     } catch(error){
         debugLog(error);
     }
@@ -104,7 +105,7 @@ const belongsToKleerkast = async (id) => {
             throw new Error(`kledingstuk met id ${id} bestaat niet`);
         }
         const kleerkast1 = await kledingstukById.getKleerkast();
-        debugLog(`Kledingstuk met id ${id} hoort bij kleerkast met id ${kleerkast1.id}`);
+        debugLog(`Kledingstuk met id ${id} hoort bij kleerkast met id ${kleerkast1.kleerkastId}`);
         return kleerkast1;
     } catch(error){
         debugLog(error);

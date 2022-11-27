@@ -2,7 +2,7 @@
   "name": "webservices-Louis-De-Gruyter",
   "version": "1.0",
   "scripts": {
-    "start": "npx env-cmd nodemon src/index.js"
+    "start": "sequelize db:migrate && npx env-cmd nodemon src/index.js"
   },
   "dependencies": {
     "@koa/cors": "^4.0.0",
@@ -20,6 +20,7 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
+    "faker": "^6.6.6",
     "nodemon": "^2.0.20"
   }
 }

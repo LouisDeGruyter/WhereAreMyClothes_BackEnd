@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const process = require('process');
 const env = process.env.NODE_ENV || 'development';
+const {exec} = require('child_process');
 
 const basename = path.basename(__filename);
 const config = require(__dirname + '/../config/config.json')[env];
@@ -37,18 +38,18 @@ const initializeDatabase = async () => {
   });
 }
 
-
 const user = db.models.user;
 const kledingstuk = db.models.kledingstuk;
 const kleerkast = db.models.kleerkast;
 
-kleerkast.hasMany(kledingstuk, { foreignKey: 'kledingstukId' , as:"kledingstukken", onDelete: 'cascade', hooks: true});
+kleerkast.hasMany(kledingstuk, { foreignKey: 'kledingstukId' , as:"kledingstukken", onDelete: 'cascade'});
 user.hasMany(kledingstuk, { foreignKey: 'kledingstukId' ,as:"kledingstukken", onDelete: 'CASCADE'});
 user.hasMany(kleerkast, { foreignKey: 'kleerkastId' ,as:"kleerkasten", onDelete: 'CASCADE'});
 kleerkast.belongsTo(user, { foreignKey: 'userId' ,as:"user"});
 kledingstuk.belongsTo(kleerkast, { foreignKey: 'kleerkastId' ,as:"kleerkast"});
 kledingstuk.belongsTo(user, { foreignKey: 'userId' ,as:"user"});
 initializeDatabase();
+
 
 
 

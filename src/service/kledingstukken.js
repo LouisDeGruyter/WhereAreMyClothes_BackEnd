@@ -38,6 +38,10 @@ const  create =async ({brand,color, type, size,kleerkastId,userId}) => {
         if(!existingUser){
             throw new Error(`user met id ${userId} bestaat niet`);
         }
+        let eigenaar = await existingKleerkast.getUser();
+        if(existingUser.userId!= eigenaar.userId){
+            throw new Error(`user met id ${userId} is niet de eigenaar van kleerkast maar user met id ${eigenaar.userId} is de eigenaar`);
+        }
         let newKledingstuk = await kledingstuk.create({brand,color, type, size,kleerkastId,userId});
         existingKleerkast.addKledingstukken(newKledingstuk);
         existingUser.addKledingstukken(newKledingstuk);

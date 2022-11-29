@@ -63,14 +63,14 @@ describe('kledingstukken', () => {
     const url = '/api/kledingstukken';
     describe('GET /api/kledingstukken', () => {
         beforeAll(async () => {
-            await Promise.all(data.users.map(gebruiker => user.create(gebruiker)));
-            await Promise.all(data.kleerkasten.map(kleerkast1 => kleerkast.create(kleerkast1)));
-            await Promise.all(data.kedingstukken.map(kledingstuk1 => kledingstuk.create(kledingstuk1)));
+            await user.bulkCreate(data.users);
+            await kleerkast.bulkCreate(data.kleerkasten);
+            await kledingstuk.bulkCreate(data.kedingstukken);
         });
         afterAll(async () => {
-            await Promise.all(dataToDelete.users.map(gebruiker => user.findByPk(gebruiker.id).then(gebruiker => gebruiker.destroy())));
-            await Promise.all(dataToDelete.kleerkasten.map(kleerkast1 => kleerkast.findByPk(kleerkast1.id).then(kleerkast1 => kleerkast1.destroy())));
-            await Promise.all(dataToDelete.kedingstukken.map(kledingstuk1 => kledingstuk.findByPk(kledingstuk1.id).then(kledingstuk1 => kledingstuk1.destroy())));
+            await kledingstuk.destroy({where:{id:dataToDelete.kledingstukken}});
+            await kleerkast.destroy({where:{id:dataToDelete.kleerkasten}});
+            await user.destroy({where:{id:dataToDelete.users}});
         });
         it('should return 200 and all kledingstukken', async () => {
             const response = await request.get(url);
@@ -78,10 +78,8 @@ describe('kledingstukken', () => {
             expect(response.body.items.length).toBe(3);
 
 
-        })});
- });
-
-
-
+        });
+    });
+});
 
 

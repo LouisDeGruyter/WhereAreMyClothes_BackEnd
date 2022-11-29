@@ -4,9 +4,8 @@ const path = require('path');
 const process = require('process');
 const env = process.env.NODE_ENV || 'development';
 const {exec} = require('child_process');
-
 const basename = path.basename(__filename);
-const config = require(__dirname + '/../config/config.json')[env];
+const config = require(__dirname + '/../config/config.js')[env];
 const {
   getLogger
 } = require('../src/core/logging');

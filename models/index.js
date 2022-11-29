@@ -1,10 +1,7 @@
 const Sequelize = require('sequelize');
 const fs = require('fs');
-const path = require('path');
 const process = require('process');
 const env = process.env.NODE_ENV || 'development';
-const {exec} = require('child_process');
-const basename = path.basename(__filename);
 const config = require(__dirname + '/../config/config.js')[env];
 const {
   getLogger
@@ -21,13 +18,14 @@ db.models = {};
 db.models.user = require('./users')(sequelize, Sequelize.DataTypes);
 db.models.kledingstuk = require('./kledingstukken')(sequelize, Sequelize.DataTypes);
 db.models.kleerkast = require('./kleerkasten')(sequelize, Sequelize.DataTypes);
+db.functions={};
 
 
 const debugLog = (message, meta = {}) => {
   if (!this.logger) this.logger = getLogger();
   this.logger.debug(message, meta);
 };
-const initializeDatabase = async () => {
+const initializeData = async () => {
   await db.sequelize.sync({
     alter: true
   }).then((require) => {
@@ -47,8 +45,13 @@ user.hasMany(kleerkast, { foreignKey: 'userId' ,as:"kleerkasten", onDelete: 'CAS
 kleerkast.belongsTo(user, { foreignKey: 'userId' ,as:"user"});
 kledingstuk.belongsTo(kleerkast, { foreignKey: 'kleerkastId' ,as:"kleerkast"});
 
-initializeDatabase();
 
+async function shutdownData(){
+  await sequelize.close();
+  debugLog('database connection closed');
+}
+db.functions.initializeData=initializeData;
+db.functions.shutdownData=shutdownData;
 
 
 

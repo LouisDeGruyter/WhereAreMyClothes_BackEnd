@@ -61,7 +61,7 @@ const deleteUserById = async(id) => {
         if(!existingUser){
             throw new Error(`Gebruiker met id ${id} bestaat niet`);
         }
-        const gebruiker = await user.destroy({ where: {id:id}})
+        const gebruiker = await user.destroy({ where: {userId:id}})
 
         debugLog(`Gebruiker met id ${id} wordt verwijderd`);
         return gebruiker;

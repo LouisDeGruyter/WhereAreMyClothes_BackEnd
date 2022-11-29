@@ -27,7 +27,7 @@ const debugLog = (message, meta = {}) => {
 };
 const initializeData = async () => {
   await db.sequelize.sync({
-    alter: true
+    force: true
   }).then((require) => {
     debugLog('Database initialized');
   }).catch((error) => {

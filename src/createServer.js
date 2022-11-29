@@ -32,7 +32,7 @@ module.exports = async function createServer() {
   
 
     //database
-    db.functions.initializeData();
+   await db.functions.initializeData();
 
     const logger = getLogger();
     app.use(

@@ -2,7 +2,7 @@ const createServer = require('../src/createServer');
 const supertest = require('supertest');
 const {models:{user,kleerkast,kledingstuk}} = require('../models');
 
-
+// voor testen zorg dat bij opstarten database wordt gereset (force: true)
 const data= {
     kedingstukken: [
         {   id: 1,
@@ -30,7 +30,7 @@ const data= {
     kleerkasten: [
         {   id: 1,
             userId: 1,
-            naam: 'Kleerkast 1',
+            name: 'Kleerkast 1',
             location:'mcDonalds',
         },
     ],
@@ -63,19 +63,21 @@ describe('kledingstukken', () => {
     const url = '/api/kledingstukken';
     describe('GET /api/kledingstukken', () => {
         beforeAll(async () => {
+            
             await user.bulkCreate(data.users);
             await kleerkast.bulkCreate(data.kleerkasten);
             await kledingstuk.bulkCreate(data.kedingstukken);
         });
         afterAll(async () => {
-            await kledingstuk.destroy({where:{id:dataToDelete.kledingstukken}});
-            await kleerkast.destroy({where:{id:dataToDelete.kleerkasten}});
-            await user.destroy({where:{id:dataToDelete.users}});
+            await kledingstuk.destroy({where:{kledingstukId:dataToDelete.kledingstukken}});
+            await kleerkast.destroy({where:{kleerkastId:dataToDelete.kleerkasten}});
+            await user.destroy({where:{userId:dataToDelete.users}});  
+            
         });
         it('should return 200 and all kledingstukken', async () => {
             const response = await request.get(url);
             expect(response.status).toBe(200);
-            expect(response.body.items.length).toBe(3);
+            expect(response.body.lengte).toBe(3);
 
 
         });

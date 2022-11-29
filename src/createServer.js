@@ -16,7 +16,7 @@ const LOG_LEVEL = config.get('log.level');
 const LOG_DISABLED = config.get('log.disabled');
 const CORS_ORIGINS = config.get('cors.origins');
 const CORS_MAX_AGE = config.get('cors.maxAge');
-
+const app = new Koa();
 
 module.exports = async function createServer() {
     initializeLogger({
@@ -29,7 +29,7 @@ module.exports = async function createServer() {
 
 
 
-    const app = new Koa();
+  
 
     //database
     db.functions.initializeData();

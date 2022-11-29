@@ -1,4 +1,3 @@
-let {KLEDING,KLEERKASTEN} = require('../data/mock-data');
 const {getLogger} = require('../core/logging');
 const {models:{kledingstuk,user,kleerkast}} = require('../../models');
 const debugLog = (message, meta = {}) => {

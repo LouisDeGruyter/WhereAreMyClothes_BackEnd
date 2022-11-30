@@ -2,8 +2,14 @@
   "name": "webservices-Louis-De-Gruyter",
   "version": "1.0",
   "jest": {
-    "testPathIgnorePatterns": ["node_modules","src","config","models","migrations","seeders"]
-
+    "testPathIgnorePatterns": [
+      "node_modules",
+      "src",
+      "config",
+      "models",
+      "migrations",
+      "seeders"
+    ]
   },
   "scripts": {
     "start": "sequelize db:migrate && npx env-cmd nodemon src/index.js",
@@ -22,9 +28,11 @@
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "mysql2": "^2.3.3",
+    "node-emoji": "^1.11.0",
     "path": "^0.12.7",
     "sequelize": "^6.25.8",
     "sequelize-cli": "^6.5.2",
+    "serialize-error": "8.1.0",
     "winston": "^3.8.2"
   },
   "devDependencies": {

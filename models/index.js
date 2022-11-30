@@ -3,9 +3,12 @@ const fs = require('fs');
 const process = require('process');
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.js')[env];
+const config2= require('config');
 const {
   getLogger
 } = require('../src/core/logging');
+const force= config2.get('initialezeDatabaseParameters.force');
+const alter= config2.get('initialezeDatabaseParameters.alter');
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
@@ -27,7 +30,8 @@ const debugLog = (message, meta = {}) => {
 };
 const initializeData = async () => {
   await db.sequelize.sync({
-    force: true
+    force: force,
+    alter: alter
   }).then((require) => {
     debugLog('Database initialized');
   }).catch((error) => {

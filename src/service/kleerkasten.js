@@ -1,5 +1,6 @@
  const {getLogger} = require('../core/logging');
  const {models:{kleerkast,user}} = require('../../models');
+ const ServiceError = require('../core/serviceError');
 const debugLog = (message, meta = {}) => {
     if(!this.logger) this.logger= getLogger();
     this.logger.debug(message, meta);
@@ -9,35 +10,29 @@ const debugLog = (message, meta = {}) => {
         return await kleerkast.findAll({include:['kledingstukken']}).then((kleerkasten)=>{
             debugLog('Alle kleerkasten worden opgehaald');
             return {kleerkasten:kleerkasten, lengte:kleerkasten.length};}
-        ).catch((error) => {
-            debugLog(error);
-        });
+        )
     };
     
     //ophalen van een kleerkast op basis van id
     const getKleerkastById = async(id) => {
-        try{
             let kleerkastById = await kleerkast.findByPk(id,{include:['kledingstukken']});
         if(!kleerkastById){
-            throw new Error(`kleerkast met id ${id} bestaat niet`);
+            throw ServiceError.notFound(`kleerkast met id ${id} bestaat niet`,{id});
         }
             debugLog(`Kleerkast met id ${id} wordt opgehaald`);
             return kleerkastById;
-        }
-        catch(error){
-            debugLog(error);
-        }
+       
     };
     //update kleerkast op basis van id
     const updateKleerkastById = async (id, {name,location,userId}) => {
-    try{
+
         let kleerkastById = await kleerkast.findByPk(id);
         if(!kleerkastById){
-            throw new Error(`kleerkast met id ${id} bestaat niet`);
+            throw ServiceError.notFound(`kleerkast met id ${id} bestaat niet`,{id});
         }
         let existingUser = await user.findByPk(userId);
         if(!existingUser){
-            throw new Error(`Gebruiker met id ${userId} bestaat niet`);
+            throw ServiceError.notFound(`user met id ${userId} bestaat niet`,{userId});
         }
         let eigenaar = await kleerkastById.getUser();
         if(eigenaar.id !== userId){
@@ -51,75 +46,59 @@ const debugLog = (message, meta = {}) => {
         kleerkastById.userId = userId;
         debugLog(`Kleerkast met id ${id} updaten`);
         return await kleerkastById.save();
-    }catch(error){
-        debugLog(error);
-    }
 };
 
     //ophalen van alle kledingstukken van een kleerkast
     const getKledingstukkenByKleerkastId = async(kleerkastId) => {
-       try{
+       
         let kleerkastById = await kleerkast.findByPk(kleerkastId);
         if(!kleerkastById){
-            throw new Error(`kleerkast met id ${kleerkastId} bestaat niet`);
+            throw ServiceError.notFound(`kleerkast met id ${kleerkastId} bestaat niet`,{kleerkastId});
         }
         const kleding =  await kleerkastById.getKledingstukken();
             debugLog(`Kledingstukken van kleerkast met id ${kleerkastId} worden opgehaald`);
             return {kledingstukken: kleding, lengte: kleding.length};
         
-       }catch(error){
-           debugLog(error);
-       }
+
     };
     
     
     //kleerkast verwijderen op basis van id
     const deleteById = async (id) => {
-        try{
             let kleerkastById = await kleerkast.findByPk(id);
             if(!kleerkastById){
-                throw new Error(`kleerkast met id ${id} bestaat niet`);
+                throw ServiceError.notFound(`kleerkast met id ${id} bestaat niet`,{id});
             }
             kleerkastById.destroy();
             debugLog(`Kleerkast met id ${id} verwijderen`);
             return kleerkastById;
-        }catch(error){
-            debugLog(error);
-        }
        
     };
     //kleerkast toevoegen
     const create = async({name,location,userId}) => {
-        try{
             const existingKleerkast = await kleerkast.findOne({where:{name,location:location,userId:userId}});
             if(existingKleerkast){
-                throw new Error(`kleerkast met naam ${name} en locatie ${location} bestaat al`);
+                throw ServiceError.validationFailed(`kleerkast met naam ${name} en locatie ${location} bestaat al`,{name,location});
             }
             const existingUser = await user.findByPk(userId);
             if(!existingUser){
-                throw new Error(`user met id ${userId} bestaat niet`);
+                throw ServiceError.notFound(`user met id ${userId} bestaat niet`,{userId});
             }
             const newKleerkast = await kleerkast.create({name,location,userId});
             existingUser.addKleerkasten(newKleerkast);
             debugLog(`Kleerkast ${name} wordt toegevoegd`);
             
             return newKleerkast;
-        }catch(error){
-            debugLog(error);
-        }
     };
     const belongsToUser = async(Id) => {
-        try{
+        
             const kleerkastById = await kleerkast.findByPk(Id);
             if(!kleerkastById){
-                throw new Error(`kleerkast met id ${Id} bestaat niet`);
+                throw ServiceError.notFound(`kleerkast met id ${Id} bestaat niet`,{Id});
             }
             const gebruiker = await kleerkastById.getUser();
             debugLog(`Kleerkast met id ${Id} hoort bij user ${gebruiker.username}`);
             return gebruiker;
-        }catch(error){
-            debugLog(error);
-        }
     };
 
     module.exports = { 

@@ -1,6 +1,6 @@
-const createServer = require('../src/createServer');
+const createServer = require('../../src/createServer');
 const supertest = require('supertest');
-const {models:{user,kleerkast,kledingstuk}} = require('../models');
+const {models:{user,kleerkast,kledingstuk}} = require('../../models');
 const url = '/api/kledingstukken';
 
 // voor testen zorg dat bij opstarten database wordt gereset (force: true)
@@ -108,22 +108,31 @@ describe('kledingstukken', () => {
         });
     });
     describe('POST /api/kledingstukken', () => {
+        let kledingstukkenToDelete = [];
         beforeAll(async () => {
             await user.bulkCreate(data.users);
             await kleerkast.bulkCreate(data.kleerkasten);
+            await kledingstuk.bulkCreate(data.kledingstukken);
         });
         afterAll(async () => {
-            await kledingstuk.destroy({where:{kledingstukId:dataToDelete.kledingstukken}});
+            await kledingstuk.destroy({where:{kledingstukId:kledingstukkenToDelete}});
             await kleerkast.destroy({where:{kleerkastId:dataToDelete.kleerkasten}});
             await user.destroy({where:{userId:dataToDelete.users}});  
             
         });
-        it('should return 200 and create kledingstuk', async () => {
+        it('should return 201 and create kledingstuk', async () => {
             const response = await request.post(url).send(
                 data.kledingstukken[0]
             );
-            expect(response.status).toBe(200);
-            expect(response.body).toEqual({brand: 'Nike', color: 'zwart', type: 'schoenen', size: 42, kleerkastId: 1, kledingstukId: 4});
+            expect(response.status).toBe(201);
+            expect(response.body.kledingstukId).toBeTruthy();
+            expect (response.body.brand).toBe(data.kledingstukken[0].brand);
+            expect (response.body.color).toBe(data.kledingstukken[0].color);
+            expect (response.body.type).toBe(data.kledingstukken[0].type);
+            expect (response.body.size).toBe(data.kledingstukken[0].size);
+            expect (response.body.kleerkastId).toBe(data.kledingstukken[0].kleerkastId);
+            kledingstukkenToDelete.push(response.body.kledingstukId);
+
         });
         it('should return 500 when brand is missing', async () => {
             const response = await request.post(url).send({

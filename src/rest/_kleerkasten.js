@@ -9,6 +9,7 @@ const getKleerkasten = async(ctx) => {
 // nieuwe kleerkast toevoegen
 const createKleerkast = async(ctx) => {
     ctx.body = await kleerkastenService.create({...ctx.request.body});
+    ctx.status = 201; // created
 };
 // kleerkast ophalen op basis van id
 const getKleerkastById = async(ctx) => {
@@ -22,6 +23,7 @@ const deleteKleerkast = async(ctx) => {
 // kleerkast updaten op basis van id
 const updateKleerkast = async(ctx) => {
     ctx.body = await kleerkastenService.updateKleerkastById(ctx.params.id, ctx.request.body);
+
 };
 // kledingstukken van de kleerkast ophalen op basis van id
 const getKledingstukkenByKleerkastId = async(ctx) => {

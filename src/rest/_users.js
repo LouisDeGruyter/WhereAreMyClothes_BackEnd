@@ -7,10 +7,12 @@ const getUser = async(ctx) => {
 
 const createUser = async(ctx) => {
     ctx.body = await userService.createUser(ctx.request.body);
+    ctx.status = 201;
 };
 
 const updateUser = async(ctx) => {
     ctx.body = await userService.updateUserById(ctx.params.id, ctx.request.body);
+
 };
 
 const deleteUser = async(ctx) => {

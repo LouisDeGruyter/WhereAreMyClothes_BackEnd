@@ -8,6 +8,7 @@ const getKledingstukkken= async(ctx) => { // alle kledingstukken ophalen
 
 const createKledingstuk= async(ctx) => { // nieuwe kledingstuk toevoegen
 ctx.body = await kledingstukkenService.create({...ctx.request.body});
+ctx.status=201; // created
 };
 
 const getKledingstukById= async(ctx)=>{ // kledingstuk ophalen op basis van id
@@ -23,7 +24,6 @@ ctx.status=204; // geen content
 
 const updateKledingstuk = async(ctx)=>{ // kledingstuk updaten op basis van id
 ctx.body= await kledingstukkenService.updateKledingStukById(ctx.params.id, {...ctx.request.body});
-
 };
 const belongsToUser = async(ctx)=>{ //gebruiker ophalen op basis van id
 ctx.body= await kledingstukkenService.belongsToUser(ctx.params.id);

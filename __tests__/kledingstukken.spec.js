@@ -123,7 +123,7 @@ describe('kledingstukken', () => {
                 data.kledingstukken[0]
             );
             expect(response.status).toBe(200);
-            expect(response.body).toEqual(data.kledingstukken[0]);
+            expect(response.body).toEqual({brand: 'Nike', color: 'zwart', type: 'schoenen', size: 42, kleerkastId: 1, kledingstukId: 4});
         });
         it('should return 500 when brand is missing', async () => {
             const response = await request.post(url).send({
@@ -164,7 +164,114 @@ describe('kledingstukken', () => {
     
 });
     describe('PUT /api/kledingstukken/:id', () => {
+        beforeAll(async () => {
+            await user.bulkCreate(data.users);
+            await kleerkast.bulkCreate(data.kleerkasten);
+            await kledingstuk.bulkCreate(data.kledingstukken);
+        });
+        afterAll(async () => {
+            await kledingstuk.destroy({where:{kledingstukId:dataToDelete.kledingstukken}});
+            await kleerkast.destroy({where:{kleerkastId:dataToDelete.kleerkasten}});
+            await user.destroy({where:{userId:dataToDelete.users}});  
+            
+        });
+        it('should return 200 and update kledingstuk with id 1', async () => {
+            const response = await request.put(url + '/1').send({
+                brand: 'aangepastMerk',
+                color: 'zwart',
+                type: 'schoenen',
+                size: 42,
+                kleerkastId: 1
+            });
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual({
+                kledingstukId: 1,
+                brand: 'aangepastMerk',
+                color: 'zwart',
+                type: 'schoenen',
+                size: 42,
+                kleerkastId: 1
+            });
+        });
+        it('should return 404 when kledingstuk does not exist', async () => {
+            const response = await request.put(url + '/999').send({
+                brand: 'Nike',
+                color: 'zwart',
+                type: 'schoenen',
+                size: 42,
+                kleerkastId: 1
+            });
+            expect(response.status).toBe(404);
+        });
     });
+    describe('DELETE /api/kledingstukken/:id', () => {
+        beforeAll(async () => {
+            await user.bulkCreate(data.users);
+            await kleerkast.bulkCreate(data.kleerkasten);
+            await kledingstuk.bulkCreate(data.kledingstukken);
+        });
+        afterAll(async () => {
+            await kledingstuk.destroy({where:{kledingstukId:dataToDelete.kledingstukken}});
+            await kleerkast.destroy({where:{kleerkastId:dataToDelete.kleerkasten}});
+            await user.destroy({where:{userId:dataToDelete.users}});  
+            
+        });
+        it('should return 204 and delete kledingstuk with id 1', async () => {
+            const response = await request.delete(url + '/1');
+            expect(response.status).toBe(204);
+            const response2 = await request.get(url + '/1');
+            expect(response2.status).toBe(404);
+        });
+        it('should return 404 when kledingstuk does not exist', async () => {
+            const response = await request.delete(url + '/999');
+            expect(response.status).toBe(404);
+        });
+    });
+        describe('GET /api/kledingstukken/:id/kleerkast', () => {
+            beforeAll(async () => {
+                await user.bulkCreate(data.users);
+                await kleerkast.bulkCreate(data.kleerkasten);
+                await kledingstuk.bulkCreate(data.kledingstukken);
+            });
+            afterAll(async () => {
+                await kledingstuk.destroy({where:{kledingstukId:dataToDelete.kledingstukken}});
+                await kleerkast.destroy({where:{kleerkastId:dataToDelete.kleerkasten}});
+                await user.destroy({where:{userId:dataToDelete.users}});  
+                
+            });
+            it('should return 200 and kleerkast with id 1', async () => {
+                const response = await request.get(url + '/1/kleerkast');
+                expect(response.status).toBe(200);
+                expect(response.body).toEqual(data.kleerkasten[0]);
+            });
+            it('should return 404 when kleerkast does not exist', async () => {
+                const response = await request.get(url + '/999/kleerkast');
+                expect(response.status).toBe(404);
+            });
+        });
+        describe('GET /api/kledingstukken/:id/user', () => {
+            beforeAll(async () => {
+                await user.bulkCreate(data.users);
+                await kleerkast.bulkCreate(data.kleerkasten);
+                await kledingstuk.bulkCreate(data.kledingstukken);
+            });
+            afterAll(async () => {
+                await kledingstuk.destroy({where:{kledingstukId:dataToDelete.kledingstukken}});
+                await kleerkast.destroy({where:{kleerkastId:dataToDelete.kleerkasten}});
+                await user.destroy({where:{userId:dataToDelete.users}});  
+                
+            });
+            it('should return 200 and user with id 1', async () => {
+                const response = await request.get(url + '/1/user');
+                expect(response.status).toBe(200);
+                expect(response.body).toEqual(data.users[0]);
+            });
+            it('should return 404 when user does not exist', async () => {
+                const response = await request.get(url + '/999/user');
+                expect(response.status).toBe(404);
+            });
+        });
+
 });
 
 

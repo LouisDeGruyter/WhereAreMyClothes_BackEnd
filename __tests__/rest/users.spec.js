@@ -142,7 +142,6 @@ describe('users', () => {
     });
     describe('POST /api/users', () => {
         let usersToDelete = [];
-        usersToDelete.push(data.users[0]);
         beforeAll(async () => {
             await user.bulkCreate(data.users);
             await kleerkast.bulkCreate(data.kleerkasten);

@@ -187,6 +187,14 @@ describe('users', () => {
             });
             expect(response.status).toBe(400);
         });
+        it('should return 400 when email is not unique', async () => {
+            const response = await request.post(`${url}`).send({
+                username: 'gewijzigd',
+                password: 'gewijzigd',
+                email: 'test2@gmail.com',
+            });
+            expect(response.status).toBe(400);
+        });
     });
     describe('PUT /api/users/:userId', () => {
         beforeAll(async () => {

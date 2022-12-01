@@ -71,13 +71,18 @@ const data= {
             password: 'test',
             email: 'test@gmail.com',
         },
+        {   userId: 2,
+            username: 'test2',
+            password: 'test2',
+            email: 'test2@gmail.com',
+        },
     ],
 };
 
     const dataToDelete = {
         kledingstukken: [1,2,3],
         kleerkasten: [1],
-        users: [1],
+        users: [1,2],
     };
 describe('kleerkasten', () => {
     let server;
@@ -157,7 +162,7 @@ describe('kleerkasten', () => {
         });
         it('should return 404 when userId does not exist', async () => {
             const response = await request.post(url).send({
-                userId: 2,
+                userId: 99,
                 name: 'Kleerkast 2',
                 location:'badkamer',
             });
@@ -180,7 +185,7 @@ describe('kleerkasten', () => {
         );
         it('should return 404 when user does not exist', async () => {
             const response = await request.post(url).send({
-                userId: 2,
+                userId: 99,
                 name: 'Kleerkast 2',
                 location:'badkamer',
             });
@@ -216,6 +221,21 @@ describe('kleerkasten', () => {
                 location:'mcDonalds',
             });
             expect(response.status).toBe(400);
+        });
+        it('should return kleerkast with kleerkastId 2 and 200', async () => {
+            const response = await request.put(`${url}/1`).send({
+                userId: 2,
+                name: 'veranderde kleerkast',
+                location:'veranderde locatie',
+            });
+            kleerkastToDelete.push(response.body.kleerkastId);
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual({
+                kleerkastId: 1,
+                userId: 2,
+                name: 'veranderde kleerkast',
+                location:'veranderde locatie',
+            });
         });
         it('should return kleerkast with kleerkastId 1 and 200', async () => {
             const response = await request.put(`${url}/1`).send({
@@ -258,7 +278,7 @@ describe('kleerkasten', () => {
         );
         it('should return 404 when user does not exist', async () => {
             const response = await request.put(`${url}/1`).send({
-                userId: 2,
+                userId: 99,
                 name: 'veranderde kleerkast',
                 location:'veranderde locatie',
             });

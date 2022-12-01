@@ -171,6 +171,25 @@ describe('kledingstukken', () => {
             });
             expect(response.status).toBe(400);
         });
+        it('should return 400 when kleerkastId is missing', async () => {
+            const response = await request.post(url).send({
+                brand: 'Nike',
+                color: 'zwart',
+                type: 'schoenen',
+                size: 42,
+            });
+            expect(response.status).toBe(400);
+        });
+        it('should return 404 when kleerkastId does not exist', async () => {
+            const response = await request.post(url).send({
+                brand: 'Nike',
+                color: 'zwart',
+                type: 'schoenen',
+                size: 42,
+                kleerkastId: 999
+            });
+            expect(response.status).toBe(404);
+        });
     
 });
     describe('PUT /api/kledingstukken/:id', () => {
@@ -202,6 +221,16 @@ describe('kledingstukken', () => {
                 size: 42,
                 kleerkastId: 1
             });
+        });
+        it('should return 404 when kleerkast does not exist', async () => {
+            const response = await request.put(url + '/1').send({
+                brand: 'aangepastMerk',
+                color: 'zwart',
+                type: 'schoenen',
+                size: 42,
+                kleerkastId: 999
+            });
+            expect(response.status).toBe(404);
         });
         it('should return 404 when kledingstuk does not exist', async () => {
             const response = await request.put(url + '/999').send({

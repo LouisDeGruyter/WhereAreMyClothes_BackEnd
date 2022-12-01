@@ -23,13 +23,14 @@ const getKledingstukById=async(id)=>{
 };
 
 const  create =async ({brand,color, type, size,kleerkastId}) => {
+    if(!brand || !color || !type || !size || !kleerkastId){
+        throw ServiceError.validationFailed(`Een of meerdere velden zijn niet ingevuld`,{brand,color,type,size,kleerkastId});
+    }
         let existingKleerkast = await kleerkast.findByPk(kleerkastId);
         if(!existingKleerkast){
             throw ServiceError.notFound(`kleerkast met id ${kleerkastId} bestaat niet`,{kleerkastId});
         }
-        if(!brand || !color || !type || !size || !kleerkastId){
-            throw ServiceError.validationFailed(`Een of meerdere velden zijn niet ingevuld`,{brand,color,type,size,kleerkastId});
-        }
+        
         let newKledingstuk = await kledingstuk.create({brand,color, type, size,kleerkastId});
         existingKleerkast.addKledingstukken(newKledingstuk);
         debugLog(`Kledingstuk met merk ${brand}, kleur ${color}, type ${type} en maat ${size} wordt aangemaakt`);

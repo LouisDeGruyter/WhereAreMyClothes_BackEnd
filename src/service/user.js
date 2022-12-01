@@ -24,9 +24,7 @@ const getUserById=async(id)=>{
     
 
 const  createUser =async ({username, email, password}) => {
-    if(!username || !email || !password){
-        throw ServiceError.validationFailed(`Een of meerdere velden zijn niet ingevuld`,{username,email,password});
-    }
+    
     const UserwithMail = await user.findOne({ where: {email:email}});
     if(UserwithMail){
         throw ServiceError.validationFailed(`Gebruiker met email ${email} bestaat al`, {email});
@@ -41,9 +39,7 @@ const updateUserById = async(id, {username, email, password}) => {
         if(!existingUser){
             throw ServiceError.notFound(`Gebruiker met id ${id} bestaat niet`, {id});
         }
-        if(!username || !email || !password){
-            throw ServiceError.validationFailed(`Een of meerdere velden zijn niet ingevuld`,{username,email,password});
-        }
+      
         const UserwithMail = await user.findOne({ where: {email:email}});
     if(UserwithMail && UserwithMail.userId!=id){
         throw ServiceError.validationFailed(`Gebruiker met email ${email} bestaat al`, {email});

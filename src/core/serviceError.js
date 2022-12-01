@@ -1,7 +1,7 @@
-const NOT_FOUND = 'NOT_FOUND';
-const VALIDATION_FAILED = 'VALIDATION_FAILED';
-const UNAUTHORIZED = 'UNAUTHORIZED';
-const FORBIDDEN = 'FORBIDDEN';
+const NOT_FOUND = 'NOT_FOUND'; // object niet gevonden
+const VALIDATION_FAILED = 'VALIDATION_FAILED'; // vallidatie mislukt voor de gegeven parameters
+const UNAUTHORIZED = 'UNAUTHORIZED'; // niet geautoriseerd voor huidige gebruiker
+const FORBIDDEN = 'FORBIDDEN'; 
 
 class ServiceError extends Error {
 

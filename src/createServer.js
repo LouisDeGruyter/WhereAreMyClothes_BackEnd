@@ -53,7 +53,7 @@ module.exports = async function createServer() {
     );
 
     app.use(bodyParser());
-    app.use(async (ctx, next) => {
+    app.use(async (ctx, next) => {	//request logging
 		const logger = getLogger();
 		logger.info(`${emoji.get('fast_forward')} ${ctx.method} ${ctx.url}`);
 	

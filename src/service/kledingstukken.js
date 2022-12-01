@@ -27,6 +27,9 @@ const  create =async ({brand,color, type, size,kleerkastId}) => {
         if(!existingKleerkast){
             throw ServiceError.notFound(`kleerkast met id ${kleerkastId} bestaat niet`,{kleerkastId});
         }
+        if(!brand || !color || !type || !size || !kleerkastId){
+            throw ServiceError.validationFailed(`Een of meerdere velden zijn niet ingevuld`,{brand,color,type,size,kleerkastId});
+        }
         let newKledingstuk = await kledingstuk.create({brand,color, type, size,kleerkastId});
         existingKleerkast.addKledingstukken(newKledingstuk);
         debugLog(`Kledingstuk met merk ${brand}, kleur ${color}, type ${type} en maat ${size} wordt aangemaakt`);
@@ -34,7 +37,9 @@ const  create =async ({brand,color, type, size,kleerkastId}) => {
 };
    
 const updateKledingStukById = async(id, {brand,color, type, size,kleerkastId}) => {
-    
+    if(!brand || !color || !type || !size || !kleerkastId || !id){
+        throw ServiceError.validationFailed(`Een of meerdere velden zijn niet ingevuld`,{brand,color,type,size,kleerkastId});
+    }
         let kledingstukById = await kledingstuk.findByPk(id);
         if(!kledingstukById){
            throw ServiceError.notFound(`kledingstuk met id ${id} bestaat niet`,{id});
@@ -63,7 +68,7 @@ const deleteById = async (id) => {
         if(!kledingstukById){
             throw ServiceError.notFound(`kledingstuk met id ${id} bestaat niet`,{id});
         }
-        return kledingstukById.destroy();
+        kledingstukById.destroy();
     
    
 };

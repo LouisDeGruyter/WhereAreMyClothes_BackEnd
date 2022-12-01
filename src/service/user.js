@@ -13,16 +13,20 @@ const getAllUsers= async ()=>{
 };
 
 const getUserById=async(id)=>{
-        const gebruiker = await user.findByPk({include: [{model:kleerkast, as:'kleerkasten',include:[{model:kledingstuk, as:"kledingstukken"}]}]});
+        const gebruiker = await user.findByPk(id,{include: [{model:kleerkast, as:'kleerkasten',include:[{model:kledingstuk, as:"kledingstukken"}]}]});
         if(!gebruiker){
             throw ServiceError.notFound(`Gebruiker met id ${id} bestaat niet`, {id});
         }
         debugLog(`Gebruiker met id ${id} wordt opgehaald`);
+
         return gebruiker;
 };
     
 
 const  createUser =async ({username, email, password}) => {
+    if(!username || !email || !password){
+        throw ServiceError.validationFailed(`Een of meerdere velden zijn niet ingevuld`,{username,email,password});
+    }
     const UserwithMail = await user.findOne({ where: {email:email}});
     if(UserwithMail){
         throw ServiceError.validationFailed(`Gebruiker met email ${email} bestaat al`, {email});
@@ -32,14 +36,20 @@ const  createUser =async ({username, email, password}) => {
         return gebruiker;
 };
 
-const updateUserById = async(id, {name, email, password}) => {
-    
-        const existingUser = await user.findByPk(id);
+const updateUserById = async(id, {username, email, password}) => {
+    const existingUser = await user.findByPk(id);
         if(!existingUser){
             throw ServiceError.notFound(`Gebruiker met id ${id} bestaat niet`, {id});
         }
+        if(!username || !email || !password){
+            throw ServiceError.validationFailed(`Een of meerdere velden zijn niet ingevuld`,{username,email,password});
+        }
+        const UserwithMail = await user.findOne({ where: {email:email}});
+    if(UserwithMail && UserwithMail.userId!=id){
+        throw ServiceError.validationFailed(`Gebruiker met email ${email} bestaat al`, {email});
+    }
         debugLog(`Gebruiker met id ${id} wordt geupdate`);
-        return existingUser.update({name:name, email:email, password:password});
+        return existingUser.update({username:username, email:email, password:password});
     
 };
 

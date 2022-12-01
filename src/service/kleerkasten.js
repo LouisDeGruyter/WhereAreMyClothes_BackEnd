@@ -25,11 +25,20 @@ const debugLog = (message, meta = {}) => {
     };
     //update kleerkast op basis van id
     const updateKleerkastById = async (id, {name,location,userId}) => {
-
+        if(!name || !location || !userId || !id){
+            throw ServiceError.validationFailed(`name, location en userId zijn verplicht`,{name,location,userId});
+        }
         let kleerkastById = await kleerkast.findByPk(id);
         if(!kleerkastById){
             throw ServiceError.notFound(`kleerkast met id ${id} bestaat niet`,{id});
         }
+        
+        const existingKleerkast = await kleerkast.findOne({where:{name,location:location,userId:userId}});
+            if(existingKleerkast){
+                throw ServiceError.validationFailed(`kleerkast met naam ${name} en locatie ${location} bestaat al`,{name,location});
+            }
+
+        
         let existingUser = await user.findByPk(userId);
         if(!existingUser){
             throw ServiceError.notFound(`user met id ${userId} bestaat niet`,{userId});
@@ -71,11 +80,13 @@ const debugLog = (message, meta = {}) => {
             }
             kleerkastById.destroy();
             debugLog(`Kleerkast met id ${id} verwijderen`);
-            return kleerkastById;
        
     };
     //kleerkast toevoegen
     const create = async({name,location,userId}) => {
+        if(!name || !location || !userId){
+            throw ServiceError.validationFailed(`name, location en userId zijn verplicht`,{name,location,userId});
+        }
             const existingKleerkast = await kleerkast.findOne({where:{name,location:location,userId:userId}});
             if(existingKleerkast){
                 throw ServiceError.validationFailed(`kleerkast met naam ${name} en locatie ${location} bestaat al`,{name,location});

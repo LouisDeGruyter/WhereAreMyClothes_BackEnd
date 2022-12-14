@@ -11,7 +11,6 @@ const emoji = require('node-emoji');
 const ServiceError = require('./core/serviceError');
 const { serializeError } = require('serialize-error');
 const db = require('../models')
-const config = require('../config/config.js')[env];
 
 
 

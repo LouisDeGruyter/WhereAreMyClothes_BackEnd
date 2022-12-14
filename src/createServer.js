@@ -137,9 +137,17 @@ module.exports = async function createServer() {
         },
         start() {
             return new Promise((resolve) => {
-				const port = config.get('port');
+
+				if (NODE_ENV === 'production') {
+					const port = config.get('port');
                 app.listen(port);
                 logger.info(`Server started on port ${port}}`);
+				} else {
+					app.listen(9000);
+					logger.info('Server started on port 9000');
+				}
+
+				
                 resolve()
             });
         },

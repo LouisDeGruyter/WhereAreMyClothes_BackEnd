@@ -1,14 +1,11 @@
  const {getLogger} = require('../core/logging');
  const {models:{kleerkast,user}} = require('../../models');
  const ServiceError = require('../core/serviceError');
-const debugLog = (message, meta = {}) => {
-    if(!this.logger) this.logger= getLogger();
-    this.logger.debug(message, meta);
-};
+
  //ophalen van alle kleerkasten
  const getAll = async() => {
         return await kleerkast.findAll({include:['kledingstukken']}).then((kleerkasten)=>{
-            debugLog('Alle kleerkasten worden opgehaald');
+
             return {kleerkasten:kleerkasten, lengte:kleerkasten.length};}
         )
     };
@@ -19,7 +16,7 @@ const debugLog = (message, meta = {}) => {
         if(!kleerkastById){
             throw ServiceError.notFound(`kleerkast met id ${id} bestaat niet`,{id});
         }
-            debugLog(`Kleerkast met id ${id} wordt opgehaald`);
+          
             return kleerkastById;
        
     };
@@ -51,7 +48,7 @@ const debugLog = (message, meta = {}) => {
         kleerkastById.name = name;
         kleerkastById.location = location;
         kleerkastById.userId = userId;
-        debugLog(`Kleerkast met id ${id} updaten`);
+
         return await kleerkastById.save();
 };
 
@@ -63,7 +60,7 @@ const debugLog = (message, meta = {}) => {
             throw ServiceError.notFound(`kleerkast met id ${kleerkastId} bestaat niet`,{kleerkastId});
         }
         const kleding =  await kleerkastById.getKledingstukken();
-            debugLog(`Kledingstukken van kleerkast met id ${kleerkastId} worden opgehaald`);
+
             return {kledingstukken: kleding, lengte: kleding.length};
         
 
@@ -77,7 +74,7 @@ const debugLog = (message, meta = {}) => {
                 throw ServiceError.notFound(`kleerkast met id ${id} bestaat niet`,{id});
             }
             kleerkastById.destroy();
-            debugLog(`Kleerkast met id ${id} verwijderen`);
+
        
     };
     //kleerkast toevoegen
@@ -93,7 +90,7 @@ const debugLog = (message, meta = {}) => {
             }
             const newKleerkast = await kleerkast.create({name,location,userId});
             existingUser.addKleerkasten(newKleerkast);
-            debugLog(`Kleerkast ${name} wordt toegevoegd`);
+
             
             return newKleerkast;
     };
@@ -104,7 +101,7 @@ const debugLog = (message, meta = {}) => {
                 throw ServiceError.notFound(`kleerkast met id ${Id} bestaat niet`,{Id});
             }
             const gebruiker = await kleerkastById.getUser();
-            debugLog(`Kleerkast met id ${Id} hoort bij user ${gebruiker.username}`);
+
             return gebruiker;
     };
 

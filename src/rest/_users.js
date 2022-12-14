@@ -51,6 +51,10 @@ deleteUser.validationScheme = {
 
 
 const getAllUsers = async(ctx) => {
+    if(ctx.request.body.email){
+        ctx.body = await userService.getUserByEmail(ctx.request.body.email);
+    }
+    else
     ctx.body = await userService.getAllUsers();
 };
 const getKledingstukkenByUserId = async(ctx) => {
@@ -69,6 +73,7 @@ getAllKleerkastenOfUserById.validationScheme = {
         id: Joi.number().integer().positive().required(),
     }),
 };
+
 module.exports = (app) => {
     const router = new Router({ prefix: '/users'});
     router.get('/', getAllUsers);
@@ -78,6 +83,7 @@ module.exports = (app) => {
     router.delete('/:id', validate(deleteUser.validationScheme),deleteUser);
     router.get('/:id/kledingstukken', validate(getKledingstukkenByUserId.validationScheme),getKledingstukkenByUserId);
     router.get('/:id/kleerkasten', validate(getAllKleerkastenOfUserById.validationScheme),getAllKleerkastenOfUserById);
+
     app.use(router.routes()).use(router.allowedMethods());
 }
 

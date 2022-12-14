@@ -7,7 +7,7 @@ const debugLog = (message, meta = {}) => {
 };
 const getAll= async ()=>{
     return await kledingstuk.findAll().then((kledingstukken)=>{
-        debugLog('Alle kledingstukken worden opgehaald');
+  
             return {kledingstukken:kledingstukken,lengte:kledingstukken.length};
         });
 };
@@ -18,7 +18,7 @@ const getKledingstukById=async(id)=>{
         if(!kledingstukById){
             throw ServiceError.notFound(`kledingstuk met id ${id} bestaat niet`,{id});
         }
-        debugLog(`Kledingstuk met id ${id} wordt opgehaald`);
+
         return kledingstukById;
 };
 
@@ -30,7 +30,7 @@ const  create =async ({brand,color, type, size,kleerkastId}) => {
         
         let newKledingstuk = await kledingstuk.create({brand,color, type, size,kleerkastId});
         existingKleerkast.addKledingstukken(newKledingstuk);
-        debugLog(`Kledingstuk met merk ${brand}, kleur ${color}, type ${type} en maat ${size} wordt aangemaakt`);
+
         return newKledingstuk;
 };
    
@@ -56,7 +56,7 @@ const updateKledingStukById = async(id, {brand,color, type, size,kleerkastId}) =
         kledingstukById.kleerkastId = kleerkastId;
         await kledingstukById.save();
         
-        debugLog(`Kledingstuk met id ${id} updaten`);
+
         return kledingstukById;
 };
 const deleteById = async (id) => {
@@ -76,7 +76,7 @@ const belongsToUser = async (id) => {
         }
         const kleerkast1= await kledingstukById.getKleerkast();
         const user1 = await kleerkast1.getUser();
-        debugLog(`Kledingstuk met id ${id} hoort bij user met id ${user1.userId}`);
+
         return user1;
 };
 const belongsToKleerkast = async (id) => {
@@ -86,7 +86,7 @@ const belongsToKleerkast = async (id) => {
             throw ServiceError.notFound(`kledingstuk met id ${id} bestaat niet`,{id});
         }
         const kleerkast1 = await kledingstukById.getKleerkast();
-        debugLog(`Kledingstuk met id ${id} hoort bij kleerkast met id ${kleerkast1.kleerkastId}`);
+
         return kleerkast1;
    
 };

@@ -1,14 +1,11 @@
 const {getLogger} = require('../core/logging');
 const {models:{user,kleerkast,kledingstuk}} = require('../../models');
 const ServiceError = require('../core/serviceError');
-const debugLog = (message, meta = {}) => {
-   if(!this.logger) this.logger= getLogger();
-   this.logger.debug(message, meta);
-};
+
 const getAllUsers= async ()=>{
     
     return await user.findAll({include: [{model:kleerkast, as:'kleerkasten',include:[{model:kledingstuk, as:"kledingstukken"}]}]}).then((users)=>{
-        debugLog('Alle gebruikers worden opgehaald');
+   
             return {users:users,lengte:users.length};})
 };
 
@@ -17,7 +14,7 @@ const getUserById=async(id)=>{
         if(!gebruiker){
             throw ServiceError.notFound(`Gebruiker met id ${id} bestaat niet`, {id});
         }
-        debugLog(`Gebruiker met id ${id} wordt opgehaald`);
+   
 
         return gebruiker;
 };
@@ -30,7 +27,7 @@ const  createUser =async ({username, email, password}) => {
         throw ServiceError.validationFailed(`Gebruiker met email ${email} bestaat al`, {email});
     }
         const gebruiker = await user.create({ username:username, email:email, password:password})
-        debugLog(`Gebruiker met gebruikersnaam ${username}, email ${email}, passwoord ${password} wordt toegevoegd`);
+
         return gebruiker;
 };
 
@@ -44,7 +41,7 @@ const updateUserById = async(id, {username, email, password}) => {
     if(UserwithMail && UserwithMail.userId!=id){
         throw ServiceError.validationFailed(`Gebruiker met email ${email} bestaat al`, {email});
     }
-        debugLog(`Gebruiker met id ${id} wordt geupdate`);
+
         return existingUser.update({username:username, email:email, password:password});
     
 };
@@ -57,7 +54,6 @@ const deleteUserById = async(id) => {
         }
         const gebruiker = await user.destroy({ where: {userId:id}})
 
-        debugLog(`Gebruiker met id ${id} wordt verwijderd`);
         return gebruiker;
 };
 const getAllKledingstukkenOfUserById = async(id) => {
@@ -74,7 +70,6 @@ const getAllKledingstukkenOfUserById = async(id) => {
             }
         }
 
-        debugLog(`Kledingstukken van gebruiker met id ${id} worden opgehaald`);
         return {kledingstukken:kledingstukken,lengte:kledingstukken.length};
 };
 const getAllKleerkastenOfUserById = async(id) => {
@@ -83,8 +78,15 @@ const getAllKleerkastenOfUserById = async(id) => {
             throw ServiceError.notFound(`Gebruiker met id ${id} bestaat niet`, {id});
         }
         const kleerkasten = await existingUser.getKleerkasten();
-        debugLog(`Kleerkasten van gebruiker met id ${id} worden opgehaald`);
         return {kleerkasten:kleerkasten,lengte:kleerkasten.length};
+};
+
+const getUserByEmail = async(email) => {
+    const existingUser = await user.findOne({ where: {email:email}});
+    if(!existingUser){
+        throw ServiceError.notFound(`Gebruiker met email ${email} bestaat niet`, {email});
+    }
+    return existingUser;
 };
 
 
@@ -95,7 +97,8 @@ module.exports = {
     updateUserById,
     deleteUserById,
     getAllKledingstukkenOfUserById,
-    getAllKleerkastenOfUserById
+    getAllKleerkastenOfUserById,
+    getUserByEmail
 };
 
 

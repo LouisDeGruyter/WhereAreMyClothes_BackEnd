@@ -11,6 +11,7 @@ const emoji = require('node-emoji');
 const ServiceError = require('./core/serviceError');
 const { serializeError } = require('serialize-error');
 const db = require('../models')
+const config = require('../config/config.js')[env];
 
 
 
@@ -137,8 +138,9 @@ module.exports = async function createServer() {
         },
         start() {
             return new Promise((resolve) => {
-                app.listen(9000);
-                logger.info(`Server started on port 9000`);
+				const port = config.get('port');
+                app.listen(port);
+                logger.info(`Server started on port ${port}}`);
                 resolve()
             });
         },

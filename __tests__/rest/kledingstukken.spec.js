@@ -1,6 +1,6 @@
-const createServer = require('../../src/createServer');
-const supertest = require('supertest');
+const {withServer} = require('../helpers');
 const {models:{user,kleerkast,kledingstuk}} = require('../../models');
+
 const url = '/api/kledingstukken';
 
 // voor testen zorg dat bij opstarten database wordt gereset (force: true) 
@@ -37,9 +37,8 @@ const data= {
     ],
     users: [
         {   userId: 1,
-            username: 'test',
-            password: 'test',
-            email: 'test@gmail.com',
+            username: process.env.AUTH_TEST_USER_USERNAME,
+            auth0Id: process.env.AUTH_TEST_USER_USER_ID,
         },
     ],
 };
@@ -52,14 +51,11 @@ const data= {
         
 
 describe('kledingstukken', () => {
-    let server;
+    let authHeader;
     let request
-    beforeAll(async () => {
-        server = await createServer();
-        request = supertest(server.getApp().callback());
-    });
-    afterAll(async () => {
-        await server.stop();
+   withServer(({request: req, authHeader: auth}) => {
+        request = req;
+        authHeader = auth;
     });
     
     describe('GET /api/kledingstukken', () => {
@@ -76,7 +72,7 @@ describe('kledingstukken', () => {
             
         });
         it('should return 200 and all kledingstukken', async () => {
-            const response = await request.get(url);
+            const response = await request.get(url).set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body.lengte).toBe(3);
             expect(response.body.kledingstukken).toEqual(data.kledingstukken);
@@ -98,12 +94,12 @@ describe('kledingstukken', () => {
         });
 
         it('should return 200 and kledingstuk with id 1', async () => {
-            const response = await request.get(url + '/1');
+            const response = await request.get(url + '/1').set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body).toEqual(data.kledingstukken[0]);
         });
         it('should return 404 when kledingstuk does not exist', async () => {
-            const response = await request.get(url + '/999');
+            const response = await request.get(url + '/999').set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
     });
@@ -124,7 +120,7 @@ describe('kledingstukken', () => {
         it('should return 201 and create kledingstuk', async () => {
             const response = await request.post(url).send(
                 data.kledingstukken[0]
-            );
+            ).set('Authorization', authHeader);
             expect(response.status).toBe(201);
             expect(response.body.kledingstukId).toBeTruthy();
             expect (response.body.brand).toBe(data.kledingstukken[0].brand);
@@ -141,7 +137,7 @@ describe('kledingstukken', () => {
                 type: 'schoenen',
                 size: 42,
                 kleerkastId: 1
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         });
         it('should return 400 when color is missing', async () => {
@@ -150,7 +146,7 @@ describe('kledingstukken', () => {
                 type: 'schoenen',
                 size: 42,
                 kleerkastId: 1
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         });
         it('should return 400 when type is missing', async () => {
@@ -159,7 +155,7 @@ describe('kledingstukken', () => {
                 color: 'zwart',
                 size: 42,
                 kleerkastId: 1
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         });
         it('should return 400 when size is missing', async () => {
@@ -168,7 +164,7 @@ describe('kledingstukken', () => {
                 color: 'zwart',
                 type: 'schoenen',
                 kleerkastId: 1
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         });
         it('should return 400 when kleerkastId is missing', async () => {
@@ -177,7 +173,7 @@ describe('kledingstukken', () => {
                 color: 'zwart',
                 type: 'schoenen',
                 size: 42,
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         });
         it('should return 404 when kleerkastId does not exist', async () => {
@@ -187,7 +183,7 @@ describe('kledingstukken', () => {
                 type: 'schoenen',
                 size: 42,
                 kleerkastId: 999
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
     
@@ -211,7 +207,7 @@ describe('kledingstukken', () => {
                 type: 'schoenen',
                 size: 42,
                 kleerkastId: 1
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body).toEqual({
                 kledingstukId: 1,
@@ -229,7 +225,7 @@ describe('kledingstukken', () => {
                 type: 'schoenen',
                 size: 42,
                 kleerkastId: 999
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
         it('should return 404 when kledingstuk does not exist', async () => {
@@ -239,7 +235,7 @@ describe('kledingstukken', () => {
                 type: 'schoenen',
                 size: 42,
                 kleerkastId: 1
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
         it('should return 400 when brand is missing', async () => {
@@ -248,7 +244,7 @@ describe('kledingstukken', () => {
                 type: 'schoenen',
                 size: 42,
                 kleerkastId: 1
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         });
         it('should return 400 when color is missing', async () => {
@@ -257,7 +253,7 @@ describe('kledingstukken', () => {
                 type: 'schoenen',
                 size: 42,
                 kleerkastId: 1
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         }
         );
@@ -267,7 +263,7 @@ describe('kledingstukken', () => {
                 color: 'zwart',
                 size: 42,
                 kleerkastId: 1
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         });
         it('should return 400 when size is missing', async () => {
@@ -276,7 +272,7 @@ describe('kledingstukken', () => {
                 color: 'zwart',
                 type: 'schoenen',
                 kleerkastId: 1
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         });
 
@@ -294,15 +290,15 @@ describe('kledingstukken', () => {
             
         });
         it('should return 204 and delete kledingstuk with id 1', async () => {
-            const response = await request.delete(url + '/1');
+            const response = await request.delete(url + '/1').set('Authorization', authHeader);
             expect(response.status).toBe(204);
         });
         it('should return 404 when kledingstuk does not exist', async () => {
-            const response = await request.delete(url + '/999');
+            const response = await request.delete(url + '/999').set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
         it('should return 404 for deleted kledingstuk', async () => {
-            const response = await request.get(url + '/1');
+            const response = await request.get(url + '/1').set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
     });
@@ -319,12 +315,12 @@ describe('kledingstukken', () => {
                 
             });
             it('should return 200 and kleerkast with id 1', async () => {
-                const response = await request.get(url + '/1/kleerkast');
+                const response = await request.get(url + '/1/kleerkast').set('Authorization', authHeader);
                 expect(response.status).toBe(200);
                 expect(response.body).toEqual(data.kleerkasten[0]);
             });
             it('should return 404 when kleerkast does not exist', async () => {
-                const response = await request.get(url + '/999/kleerkast');
+                const response = await request.get(url + '/999/kleerkast').set('Authorization', authHeader);
                 expect(response.status).toBe(404);
             });
         });
@@ -341,12 +337,12 @@ describe('kledingstukken', () => {
                 
             });
             it('should return 200 and user with id 1', async () => {
-                const response = await request.get(url + '/1/user');
+                const response = await request.get(url + '/1/user').set('Authorization', authHeader);
                 expect(response.status).toBe(200);
                 expect(response.body).toEqual(data.users[0]);
             });
             it('should return 404 when user does not exist', async () => {
-                const response = await request.get(url + '/999/user');
+                const response = await request.get(url + '/999/user').set('Authorization', authHeader);
                 expect(response.status).toBe(404);
             });
         });

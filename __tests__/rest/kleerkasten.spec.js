@@ -1,5 +1,4 @@
-const createServer = require('../../src/createServer');
-const supertest = require('supertest');
+const {withServer} = require('../helpers');
 const {models:{user,kleerkast,kledingstuk}} = require('../../models');
 const url = '/api/kleerkasten';
 
@@ -67,14 +66,8 @@ const data= {
     ],
     users: [
         {   userId: 1,
-            username: 'test',
-            password: 'test',
-            email: 'test@gmail.com',
-        },
-        {   userId: 2,
-            username: 'test2',
-            password: 'test2',
-            email: 'test2@gmail.com',
+            username: process.env.AUTH_TEST_USER_USERNAME,
+            auth0Id: process.env.AUTH_TEST_USER_USER_ID,
         },
     ],
 };
@@ -82,18 +75,14 @@ const data= {
     const dataToDelete = {
         kledingstukken: [1,2,3],
         kleerkasten: [1],
-        users: [1,2],
+        users: [1],
     };
 describe('kleerkasten', () => {
-    let server;
+    let authHeader;
     let request
-    beforeAll(async () => {
-        server = await createServer();
-        request = supertest(server.getApp().callback());
-        
-    });
-    afterAll(async () => {
-        await server.stop();
+   withServer(({request: req, authHeader: auth}) => {
+        request = req;
+        authHeader = auth;
     });
     describe('GET /api/kleerkasten', () => {
         beforeAll(async () => {
@@ -107,7 +96,7 @@ describe('kleerkasten', () => {
             await user.destroy({ where: { userId: dataToDelete.users } });
         });
         it('should return all kleerkasten and 200', async () => {
-            const response = await request.get(url);
+            const response = await request.get(url).set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body.kleerkasten).toEqual(data.kleerkasten);
         });
@@ -124,7 +113,7 @@ describe('kleerkasten', () => {
             await user.destroy({ where: { userId: dataToDelete.users } });
         });
         it('should return kleerkast with kleerkastId 1 and 200', async () => {
-            const response = await request.get(`${url}/1`);
+            const response = await request.get(`${url}/1`).set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body.location).toBe('mcDonalds');
             expect(response.body.name).toBe('Kleerkast 1');
@@ -132,7 +121,7 @@ describe('kleerkasten', () => {
             expect(response.body.kleerkastId).toBeTruthy();
         });
         it('should return 404 when kleerkastId does not exist', async () => {
-            const response = await request.get(`${url}/99`);
+            const response = await request.get(`${url}/99`).set('Authorization', authHeader);
             expect(response.status).toBe(404);
         }
         );
@@ -153,7 +142,7 @@ describe('kleerkasten', () => {
                 userId: 1,
                 name: 'Kleerkast 3',
                 location:'badkamer',
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(201);
             expect(response.body.location).toBe('badkamer');
             expect(response.body.name).toBe('Kleerkast 3');
@@ -165,21 +154,21 @@ describe('kleerkasten', () => {
                 userId: 99,
                 name: 'Kleerkast 2',
                 location:'badkamer',
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
         it('should return 400 when name is not provided', async () => {
             const response = await request.post(url).send({
                 userId: 1,
                 location:'badkamer',
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         });
         it('should return 400 when location is not provided', async () => {
             const response = await request.post(url).send({
                 userId: 1,
                 name: 'Kleerkast 2',
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         }
         );
@@ -188,7 +177,7 @@ describe('kleerkasten', () => {
                 userId: 99,
                 name: 'Kleerkast 2',
                 location:'badkamer',
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
         it('should return 400 if kleerkast already exists', async () => {
@@ -196,7 +185,7 @@ describe('kleerkasten', () => {
                 userId: 1,
                 name: 'Kleerkast 1',
                 location:'mcDonalds',
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         });
     });
@@ -219,7 +208,7 @@ describe('kleerkasten', () => {
                 userId: 1,
                 name: 'Kleerkast 1',
                 location:'mcDonalds',
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         });
         it('should return kleerkast with kleerkastId 2 and 200', async () => {
@@ -227,7 +216,7 @@ describe('kleerkasten', () => {
                 userId: 2,
                 name: 'veranderde kleerkast',
                 location:'veranderde locatie',
-            });
+            }).set('Authorization', authHeader);
             kleerkastToDelete.push(response.body.kleerkastId);
             expect(response.status).toBe(200);
             expect(response.body).toEqual({
@@ -242,7 +231,7 @@ describe('kleerkasten', () => {
                 userId: 1,
                 name: 'veranderde kleerkast',
                 location:'veranderde locatie',
-            });
+            }).set('Authorization', authHeader);
             kleerkastToDelete.push(response.body.kleerkastId);
             expect(response.status).toBe(200);
             expect(response.body).toEqual({
@@ -257,14 +246,14 @@ describe('kleerkasten', () => {
                 userId: 1,
                 name: 'veranderde kleerkast',
                 location:'veranderde locatie',
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
         it('should return 400 when name is not provided', async () => {
             const response = await request.put(`${url}/1`).send({
                 userId: 1,
                 location:'veranderde locatie',
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         }
         );
@@ -272,7 +261,7 @@ describe('kleerkasten', () => {
             const response = await request.put(`${url}/1`).send({
                 userId: 1,
                 name: 'veranderde kleerkast',
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(400);
         }
         );
@@ -281,7 +270,7 @@ describe('kleerkasten', () => {
                 userId: 99,
                 name: 'veranderde kleerkast',
                 location:'veranderde locatie',
-            });
+            }).set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
     });
@@ -297,15 +286,15 @@ describe('kleerkasten', () => {
             await user.destroy({ where: { userId: dataToDelete.users } });
         });
         it('should not be able to return kleerkast with kleerkastId 1 and status should be 204', async () => {
-            const response = await request.delete(`${url}/1`);
+            const response = await request.delete(`${url}/1`).set('Authorization', authHeader);
             expect(response.status).toBe(204);
         });
         it('should return 404 when kleerkastId does not exist', async () => {
-            const response = await request.delete(`${url}/99`);
+            const response = await request.delete(`${url}/99`).set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
         it('should not be able to return deleted item', async () => {
-            const response = await request.get(`${url}/1`);
+            const response = await request.get(`${url}/1`).set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
     });
@@ -321,12 +310,12 @@ describe('kleerkasten', () => {
             await user.destroy({ where: { userId: dataToDelete.users } });
         });
         it('should return kledingstukken with kleerkastId 1 and 200', async () => {
-            const response = await request.get(`${url}/1/kledingstukken`);
+            const response = await request.get(`${url}/1/kledingstukken`).set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body).toEqual({kledingstukken:data.kleerkasten[0].kledingstukken,lengte:3});
         });
         it('should return 404 when kleerkastId does not exist', async () => {
-            const response = await request.get(`${url}/99/kledingstukken`);
+            const response = await request.get(`${url}/99/kledingstukken`).set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
     });
@@ -342,12 +331,12 @@ describe('kleerkasten', () => {
             await user.destroy({ where: { userId: dataToDelete.users } });
         });
         it('should return user and 200', async () => {
-            const response = await request.get(`${url}/1/user`);
+            const response = await request.get(`${url}/1/user`).set('Authorization', authHeader);
             expect(response.status).toBe(200);
             expect(response.body).toEqual(data.users[0]);
         });
         it('should return 404 when kleerkastId does not exist', async () => {
-            const response = await request.get(`${url}/99/user`);
+            const response = await request.get(`${url}/99/user`).set('Authorization', authHeader);
             expect(response.status).toBe(404);
         });
 

@@ -18,6 +18,7 @@ module.exports = {
     dialect: process.env.DATABASE_DIALECT,
     port: process.env.DATABASE_PORT,
     logging: false,
+    
   },
   production: {
     username: process.env.DATABASE_USERNAME,

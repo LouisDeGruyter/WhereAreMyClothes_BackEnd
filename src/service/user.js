@@ -20,18 +20,13 @@ const getUserById=async(id)=>{
 };
     
 
-const  createUser =async ({username, email, password}) => {
+const  createUser =async ({username,auth0id}) => {
     
-    const UserwithMail = await user.findOne({ where: {email:email}});
-    if(UserwithMail){
-        throw ServiceError.validationFailed(`Gebruiker met email ${email} bestaat al`, {email});
-    }
-        const gebruiker = await user.create({ username:username, email:email, password:password})
-
-        return gebruiker;
+        const gebruiker = await user.create({ username:username,auth0id:auth0id});
+        return gebruiker.userId;
 };
 
-const updateUserById = async(id, {username, email, password}) => {
+const updateUserById = async(id, {username}) => {
     const existingUser = await user.findByPk(id);
         if(!existingUser){
             throw ServiceError.notFound(`Gebruiker met id ${id} bestaat niet`, {id});
@@ -42,7 +37,7 @@ const updateUserById = async(id, {username, email, password}) => {
         throw ServiceError.validationFailed(`Gebruiker met email ${email} bestaat al`, {email});
     }
 
-        return existingUser.update({username:username, email:email, password:password});
+        return existingUser.update({username:username});
     
 };
 
@@ -77,18 +72,17 @@ const getAllKleerkastenOfUserById = async(id) => {
         if(!existingUser){
             throw ServiceError.notFound(`Gebruiker met id ${id} bestaat niet`, {id});
         }
-        const kleerkasten = await existingUser.getKleerkasten();
+        const kleerkasten = await existingUser.getKleerkasten({include:[{model:kledingstuk, as:"kledingstukken"}]});
         return {kleerkasten:kleerkasten,lengte:kleerkasten.length};
 };
 
-const getUserByEmail = async(email) => {
-    const existingUser = await user.findOne({ where: {email:email}});
+const getByAuth0Id = async(auth0id) => {
+    const existingUser = await user.findOne({ where: {auth0id:auth0id}});
     if(!existingUser){
-        throw ServiceError.notFound(`Gebruiker met email ${email} bestaat niet`, {email});
+        throw ServiceError.notFound(`Gebruiker met auth0id ${auth0id} bestaat niet`, {auth0id});
     }
     return existingUser;
 };
-
 
 module.exports = {
     getAllUsers,
@@ -98,7 +92,7 @@ module.exports = {
     deleteUserById,
     getAllKledingstukkenOfUserById,
     getAllKleerkastenOfUserById,
-    getUserByEmail
+    getByAuth0Id
 };
 
 

@@ -11,21 +11,28 @@
     };
     
     //ophalen van een kleerkast op basis van id
-    const getKleerkastById = async(id) => {
+    const getKleerkastById = async(id,auth0) => {
             let kleerkastById = await kleerkast.findByPk(id,{include:['kledingstukken']});
         if(!kleerkastById){
             throw ServiceError.notFound(`kleerkast met id ${id} bestaat niet`,{id});
         }
-          
+        let eigenaar = await kleerkastById.getUser();
+        if(eigenaar.auth0id !== auth0){
+            throw ServiceError.notFound(`Je hebt geen toegang tot deze kleerkast`,{id});
+        }
             return kleerkastById;
        
     };
     //update kleerkast op basis van id
-    const updateKleerkastById = async (id, {name,location,userId}) => {
+    const updateKleerkastById = async (id, {name,location,userId},auth0) => {
       
         let kleerkastById = await kleerkast.findByPk(id);
         if(!kleerkastById){
             throw ServiceError.notFound(`kleerkast met id ${id} bestaat niet`,{id});
+        }
+        let eigenaar = await kleerkastById.getUser();
+        if(eigenaar.auth0id !== auth0){
+            throw ServiceError.notFound(`Je hebt geen toegang tot deze kleerkast`,{id});
         }
         
         const existingKleerkast = await kleerkast.findOne({where:{name,location:location,userId:userId}});
@@ -38,7 +45,6 @@
         if(!existingUser){
             throw ServiceError.notFound(`user met id ${userId} bestaat niet`,{userId});
         }
-        let eigenaar = await kleerkastById.getUser();
         if(eigenaar.id !== userId){
             eigenaar.removeKleerkasten(kleerkastById);
             let nieuweEigenaar = await user.findByPk(userId);
@@ -53,9 +59,13 @@
 };
 
     //ophalen van alle kledingstukken van een kleerkast
-    const getKledingstukkenByKleerkastId = async(kleerkastId) => {
+    const getKledingstukkenByKleerkastId = async(kleerkastId,auth0) => {
        
         let kleerkastById = await kleerkast.findByPk(kleerkastId);
+        let eigenaar = await kleerkastById.getUser();
+        if(eigenaar.auth0id !== auth0){
+            throw ServiceError.notFound(`Je hebt geen toegang tot deze kleerkast`,{id});
+        }
         if(!kleerkastById){
             throw ServiceError.notFound(`kleerkast met id ${kleerkastId} bestaat niet`,{kleerkastId});
         }
@@ -68,8 +78,12 @@
     
     
     //kleerkast verwijderen op basis van id
-    const deleteById = async (id) => {
+    const deleteById = async (id,auth0) => {
             let kleerkastById = await kleerkast.findByPk(id);
+            let eigenaar = await kleerkastById.getUser();
+            if(eigenaar.auth0id !== auth0){
+                throw ServiceError.notFound(`Je hebt geen toegang tot deze kleerkast`,{id});
+            }
             if(!kleerkastById){
                 throw ServiceError.notFound(`kleerkast met id ${id} bestaat niet`,{id});
             }
@@ -84,7 +98,7 @@
             if(existingKleerkast){
                 throw ServiceError.validationFailed(`kleerkast met naam ${name} en locatie ${location} bestaat al`,{name,location});
             }
-            const existingUser = await user.findByPk(userId);
+            const existingUser = await user.findOne({where:{userId:userId}});
             if(!existingUser){
                 throw ServiceError.notFound(`user met id ${userId} bestaat niet`,{userId});
             }

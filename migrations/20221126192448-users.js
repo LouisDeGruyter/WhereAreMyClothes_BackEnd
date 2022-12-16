@@ -12,16 +12,6 @@ module.exports = {
               allowNull: false,
 
           },
-          password: {
-              type: Sequelize.STRING,
-              allowNull: false,
-
-          },
-          email: {
-              type: Sequelize.STRING,
-              allowNull: false,
-              unique: true,
-          }
       },
       {
           freezeTableName: true,

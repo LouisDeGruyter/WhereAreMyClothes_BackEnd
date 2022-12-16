@@ -11,10 +11,9 @@
       "seeders"
     ]
   },
-  
   "scripts": {
-    "start": "sequelize db:migrate && npx env-cmd nodemon src/index.js",
-    "start:prod":"node src/index.js",
+    "start": "npx env-cmd nodemon src/index.js",
+    "start:prod": "node src/index.js",
     "seed": "sequelize db:seed --seed 202211271307_users && sequelize db:seed --seed 20221127121254-kleerkasten && sequelize db:seed --seed 20221127121542-kledingstukken",
     "test": "jest --runInBand",
     "test:coverage": "yarn test --coverage"
@@ -22,14 +21,17 @@
   "dependencies": {
     "@koa/cors": "^4.0.0",
     "@koa/router": "^12.0.0",
+    "axios": "^1.2.1",
     "config": "^3.3.8",
     "dotenv": "^16.0.3",
     "env-cmd": "^10.1.0",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "joi": "^17.7.0",
+    "jwks-rsa": "^3.0.0",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
+    "koa-jwt": "^4.0.3",
     "mysql2": "^2.3.3",
     "node-emoji": "^1.11.0",
     "path": "^0.12.7",

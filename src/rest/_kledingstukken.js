@@ -21,7 +21,7 @@ createKledingstuk.validationScheme = {
 };
 
 const getKledingstukById= async(ctx)=>{ // kledingstuk ophalen op basis van id
-ctx.body= await kledingstukkenService.getKledingstukById(ctx.params.id); // id niet geparsed
+ctx.body= await kledingstukkenService.getKledingstukById(ctx.params.id, ctx.state.user.sub); // id niet geparsed
 
 };
 getKledingstukById.validationScheme={
@@ -31,7 +31,7 @@ getKledingstukById.validationScheme={
 };
 
 const deleteKLedingstuk = async(ctx)=>{ // kledingstuk verwijderen op basis van id
-ctx.body= await kledingstukkenService.deleteById(ctx.params.id);
+ctx.body= await kledingstukkenService.deleteById(ctx.params.id, ctx.state.user.sub);
 ctx.status=204; // geen content
 
 };
@@ -42,7 +42,7 @@ deleteKLedingstuk.validationScheme={
 };
 
 const updateKledingstuk = async(ctx)=>{ // kledingstuk updaten op basis van id
-ctx.body= await kledingstukkenService.updateKledingStukById(ctx.params.id, {...ctx.request.body});
+ctx.body= await kledingstukkenService.updateKledingStukById(ctx.params.id, {...ctx.request.body}, ctx.state.user.sub);
 };
 updateKledingstuk.validationScheme={
     params: Joi.object({

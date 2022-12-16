@@ -11,7 +11,7 @@ const emoji = require('node-emoji');
 const ServiceError = require('./core/serviceError');
 const { serializeError } = require('serialize-error');
 const db = require('../models')
-
+const {checkJwtToken} = require('./core/auth');
 
 
 const NODE_ENV = config.get('env');
@@ -51,6 +51,13 @@ module.exports = async function createServer() {
             maxAge: CORS_MAX_AGE,
         })
     );
+	app.use(checkJwtToken());
+	app.use(async(ctx, next) => {
+		logger.debug(`token : ${ctx.headers.authorization}`);
+		logger.debug(`current user: ${JSON.stringify(ctx.state.user)}`);
+		logger.debug(`error in token: ${ctx.state.jwtOriginalError}`)
+		await next();
+	});
 
     app.use(bodyParser());
     app.use(async (ctx, next) => {	//request logging

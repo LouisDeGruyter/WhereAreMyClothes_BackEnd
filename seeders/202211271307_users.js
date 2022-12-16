@@ -7,8 +7,7 @@ module.exports = {
         for (let i = 0; i < 3; i++) {
             users.push({
                 username: faker.name.firstName(),
-                password: faker.internet.password(),
-                email: faker.internet.email(),
+                auth0id: `unknown${i}`,
             });
         }
         return queryInterface.bulkInsert('Users', users);

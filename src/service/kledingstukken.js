@@ -13,10 +13,15 @@ const getAll= async ()=>{
 };
 
 
-const getKledingstukById=async(id)=>{
+const getKledingstukById=async(id, auth0)=>{
         let kledingstukById = await kledingstuk.findByPk(id);
         if(!kledingstukById){
             throw ServiceError.notFound(`kledingstuk met id ${id} bestaat niet`,{id});
+        }
+        let kleerkast = await kledingstukById.getKleerkast();
+        let eigenaar = await kleerkast.getUser();
+        if(eigenaar.auth0id !== auth0){
+            throw ServiceError.notFound(`Je hebt geen toegang tot dit kledingstuk`,{id});
         }
 
         return kledingstukById;
@@ -34,7 +39,7 @@ const  create =async ({brand,color, type, size,kleerkastId}) => {
         return newKledingstuk;
 };
    
-const updateKledingStukById = async(id, {brand,color, type, size,kleerkastId}) => {
+const updateKledingStukById = async(id, {brand,color, type, size,kleerkastId},auth0) => {
    
         let kledingstukById = await kledingstuk.findByPk(id);
         if(!kledingstukById){
@@ -45,6 +50,10 @@ const updateKledingStukById = async(id, {brand,color, type, size,kleerkastId}) =
             throw ServiceError.notFound(`kleerkast met id ${kleerkastId} bestaat niet`,{kleerkastId});
         }
         let huidigeKleerkast = await kledingstukById.getKleerkast();
+        let eigenaar = await huidigeKleerkast.getUser();
+        if(eigenaar.auth0id !== auth0){
+            throw ServiceError.notFound(`Je hebt geen toegang tot dit kledingstuk`,{id});
+        }
         if(huidigeKleerkast.id != kleerkastId){
             huidigeKleerkast.removeKledingstukken(kledingstukById);
             existingKleerkast.addKledingstukken(kledingstukById);
@@ -59,8 +68,13 @@ const updateKledingStukById = async(id, {brand,color, type, size,kleerkastId}) =
 
         return kledingstukById;
 };
-const deleteById = async (id) => {
+const deleteById = async (id,auth0id) => {
         let kledingstukById = await kledingstuk.findByPk(id);
+        let kleerkast1 = await kledingstukById.getKleerkast();
+        let user1 = await kleerkast1.getUser();
+        if(user1.auth0id !== auth0id){
+            throw ServiceError.notFound(`Je hebt geen toegang tot dit kledingstuk`,{id});
+        }
         if(!kledingstukById){
             throw ServiceError.notFound(`kledingstuk met id ${id} bestaat niet`,{id});
         }

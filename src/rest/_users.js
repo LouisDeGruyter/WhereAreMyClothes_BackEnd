@@ -2,6 +2,7 @@ const Router = require('@koa/router');
 const userService = require('../service/user');
 const Joi = require('joi');
 const validate= require('./_validation');
+const {addUserInfo} = require('../core/auth');
 const getUser = async(ctx) => {
     ctx.body = await userService.getUserById(ctx.params.id);
 };
@@ -18,8 +19,7 @@ const createUser = async(ctx) => {
 createUser.validationScheme = {
     body: {
         username: Joi.string().required(),
-        email: Joi.string().required(),
-        password: Joi.string().required(),
+        auth0id: Joi.string().required(), 
     },
 };
 
@@ -33,8 +33,7 @@ updateUser.validationScheme = {
     }),
     body: {
         username: Joi.string().required(),
-        email: Joi.string().required(),
-        password: Joi.string().required(),
+        auth0id: Joi.string().required(),
     },
 };
 
@@ -58,21 +57,36 @@ const getAllUsers = async(ctx) => {
     ctx.body = await userService.getAllUsers();
 };
 const getKledingstukkenByUserId = async(ctx) => {
-    ctx.body = await userService.getAllKledingstukkenOfUserById(ctx.params.id);
+    let userId=0;
+    try{
+    const user= await userService.getByAuth0Id(ctx.state.user.sub);
+    userId=user.userId;
+    }catch(err){
+        await addUserInfo(ctx);
+        userId= await userService.createUser({
+            username:ctx.state.user.name,
+            auth0id:ctx.state.user.sub,
+        })
+    }
+    ctx.body = await userService.getAllKledingstukkenOfUserById(userId);
 };
-getKledingstukkenByUserId.validationScheme = {
-    params: Joi.object({
-        id: Joi.number().integer().positive().required(),
-    }),
-};
+
 const getAllKleerkastenOfUserById = async(ctx) => {
-    ctx.body = await userService.getAllKleerkastenOfUserById(ctx.params.id);
+    let userId=0;
+    try{
+    const user= await userService.getByAuth0Id(ctx.state.user.sub);
+    userId=user.userId;
+    }catch(err){
+        await addUserInfo(ctx);
+        userId= await userService.createUser({
+            username:ctx.state.user.name,
+            auth0id:ctx.state.user.sub,
+        })
+    }
+    ctx.body = await userService.getAllKleerkastenOfUserById(userId);
 };
-getAllKleerkastenOfUserById.validationScheme = {
-    params: Joi.object({
-        id: Joi.number().integer().positive().required(),
-    }),
-};
+
+ 
 
 module.exports = (app) => {
     const router = new Router({ prefix: '/users'});
@@ -81,8 +95,8 @@ module.exports = (app) => {
     router.post('/', validate(createUser.validationScheme),createUser);
     router.put('/:id', validate(updateUser.validationScheme),updateUser);
     router.delete('/:id', validate(deleteUser.validationScheme),deleteUser);
-    router.get('/:id/kledingstukken', validate(getKledingstukkenByUserId.validationScheme),getKledingstukkenByUserId);
-    router.get('/:id/kleerkasten', validate(getAllKleerkastenOfUserById.validationScheme),getAllKleerkastenOfUserById);
+    router.get('/:id/kledingstukken',getKledingstukkenByUserId);
+    router.get('/:id/kleerkasten', getAllKleerkastenOfUserById);
 
     app.use(router.routes()).use(router.allowedMethods());
 }

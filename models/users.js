@@ -10,17 +10,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             
         },
-        password: {
+        auth0id: {
             type: DataTypes.STRING,
             allowNull: false,
-            
+            unique: true
         },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-            
-        }
     },
     {
         freezeTableName: true,

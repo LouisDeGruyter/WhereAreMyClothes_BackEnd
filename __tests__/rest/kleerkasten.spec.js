@@ -1,5 +1,5 @@
 const {withServer} = require('../helpers');
-const {models:{user,kleerkast,kledingstuk}} = require('../../models');
+const {models:{user,kleerkast,kledingstuk}} = require('../../src/data/models');
 const url = '/api/kleerkasten';
 
 const data= {

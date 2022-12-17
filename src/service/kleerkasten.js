@@ -62,13 +62,14 @@
     const getKledingstukkenByKleerkastId = async(kleerkastId,auth0) => {
        
         let kleerkastById = await kleerkast.findByPk(kleerkastId);
+        if(!kleerkastById){
+            throw ServiceError.notFound(`kleerkast met id ${kleerkastId} bestaat niet`,{kleerkastId});
+        }
         let eigenaar = await kleerkastById.getUser();
         if(eigenaar.auth0id !== auth0){
             throw ServiceError.notFound(`Je hebt geen toegang tot deze kleerkast`,{id});
         }
-        if(!kleerkastById){
-            throw ServiceError.notFound(`kleerkast met id ${kleerkastId} bestaat niet`,{kleerkastId});
-        }
+        
         const kleding =  await kleerkastById.getKledingstukken();
 
             return {kledingstukken: kleding, lengte: kleding.length};
@@ -80,13 +81,14 @@
     //kleerkast verwijderen op basis van id
     const deleteById = async (id,auth0) => {
             let kleerkastById = await kleerkast.findByPk(id);
+            if(!kleerkastById){
+                throw ServiceError.notFound(`kleerkast met id ${id} bestaat niet`,{id});
+            }
             let eigenaar = await kleerkastById.getUser();
             if(eigenaar.auth0id !== auth0){
                 throw ServiceError.notFound(`Je hebt geen toegang tot deze kleerkast`,{id});
             }
-            if(!kleerkastById){
-                throw ServiceError.notFound(`kleerkast met id ${id} bestaat niet`,{id});
-            }
+           
             kleerkastById.destroy();
 
        
@@ -99,9 +101,7 @@
                 throw ServiceError.validationFailed(`kleerkast met naam ${name} en locatie ${location} bestaat al`,{name,location});
             }
             const existingUser = await user.findOne({where:{userId:userId}});
-            if(!existingUser){
-                throw ServiceError.notFound(`user met id ${userId} bestaat niet`,{userId});
-            }
+            
             const newKleerkast = await kleerkast.create({name,location,userId});
             existingUser.addKleerkasten(newKleerkast);
 

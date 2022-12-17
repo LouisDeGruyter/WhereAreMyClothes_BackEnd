@@ -33,7 +33,6 @@ updateUser.validationScheme = {
     }),
     body: {
         username: Joi.string().required(),
-        auth0id: Joi.string().required(),
     },
 };
 

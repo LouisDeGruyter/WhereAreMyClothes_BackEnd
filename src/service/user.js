@@ -31,11 +31,6 @@ const updateUserById = async(id, {username}) => {
         if(!existingUser){
             throw ServiceError.notFound(`Gebruiker met id ${id} bestaat niet`, {id});
         }
-      
-        const UserwithMail = await user.findOne({ where: {email:email}});
-    if(UserwithMail && UserwithMail.userId!=id){
-        throw ServiceError.validationFailed(`Gebruiker met email ${email} bestaat al`, {email});
-    }
 
         return existingUser.update({username:username});
     

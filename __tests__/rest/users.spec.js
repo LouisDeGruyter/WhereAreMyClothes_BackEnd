@@ -33,13 +33,36 @@ const data= {
             userId: 1,
             name: 'Kleerkast 1',
             location:'mcDonalds',
+            kledingstukken: [
+                {   kledingstukId: 1,
+                    brand: 'Nike',
+                    color: 'zwart',
+                    type: 'schoenen',
+                    size: 42,
+                    kleerkastId: 1
+                },
+                {   kledingstukId: 2,
+                    brand: 'Adidas',
+                    color: 'wit',
+                    type: 'schoenen',
+                    size: 43,
+                    kleerkastId: 1
+                },
+                {   kledingstukId: 3,
+                    brand: 'Puma',
+                    color: 'rood',
+                    type: 'schoenen',
+                    size: 44,
+                    kleerkastId: 1
+                },
+            ]
         },
         
     ],
     users: [
         {   userId: 1,
             username: process.env.AUTH_TEST_USER_USERNAME,
-            auth0Id: process.env.AUTH_TEST_USER_USER_ID,
+            auth0id: process.env.AUTH_TEST_USER_USER_ID,
             kleerkasten: [
                 {   kleerkastId: 1,
                     userId: 1,
@@ -76,6 +99,7 @@ const data= {
         },
         {   userId: 2,
             username: 'test2',
+            auth0id: 'test2',
             kleerkasten: []
         }
     ],
@@ -95,6 +119,7 @@ describe('users', () => {
         request = req;
         authHeader = auth;
     });
+    
     describe('GET /api/users', () => {
         beforeAll(async () => {
             await user.bulkCreate(data.users);
@@ -240,7 +265,7 @@ describe('users', () => {
             expect(response.status).toBe(204);
         });
         it('should return 404 when user not found', async () => {
-            const response = await request.delete(`${url}/99`).set('Authorization', authHeader);
+            const response = await request.delete(`${url}/99`).set('Authorization', "geen betaande auth header");
             expect(response.status).toBe(404);
         });
     });
@@ -261,10 +286,7 @@ describe('users', () => {
             expect(response.body.lengte).toEqual(1);
             expect(response.body.kleerkasten).toEqual(data.kleerkasten)
         });
-        it('should return 404 when user not found', async () => {
-            const response = await request.get(`${url}/99/kleerkasten`).set('Authorization', authHeader);
-            expect(response.status).toBe(404);
-        });
+        
     });
     describe('GET /api/users/:userId/kledingstukken', () => {
         beforeAll(async () => {
@@ -282,10 +304,6 @@ describe('users', () => {
             expect(response.status).toBe(200);
             expect(response.body.lengte).toEqual(3);
             expect(response.body.kledingstukken).toEqual(data.kledingstukken);
-        });
-        it('should return 404 when user not found', async () => {
-            const response = await request.get(`${url}/99/kledingstukken`).set('Authorization', authHeader);
-            expect(response.status).toBe(404);
         });
     });
 

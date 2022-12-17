@@ -70,14 +70,15 @@ const updateKledingStukById = async(id, {brand,color, type, size,kleerkastId},au
 };
 const deleteById = async (id,auth0id) => {
         let kledingstukById = await kledingstuk.findByPk(id);
+        if(!kledingstukById){
+            throw ServiceError.notFound(`kledingstuk met id ${id} bestaat niet`,{id});
+        }
         let kleerkast1 = await kledingstukById.getKleerkast();
         let user1 = await kleerkast1.getUser();
         if(user1.auth0id !== auth0id){
             throw ServiceError.notFound(`Je hebt geen toegang tot dit kledingstuk`,{id});
         }
-        if(!kledingstukById){
-            throw ServiceError.notFound(`kledingstuk met id ${id} bestaat niet`,{id});
-        }
+        
         kledingstukById.destroy();
     
    

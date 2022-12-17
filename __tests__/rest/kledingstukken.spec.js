@@ -38,7 +38,7 @@ const data= {
     users: [
         {   userId: 1,
             username: process.env.AUTH_TEST_USER_USERNAME,
-            auth0Id: process.env.AUTH_TEST_USER_USER_ID,
+            auth0id: process.env.AUTH_TEST_USER_USER_ID,
         },
     ],
 };
@@ -60,10 +60,11 @@ describe('kledingstukken', () => {
     
     describe('GET /api/kledingstukken', () => {
         beforeAll(async () => {
-            
+
             await user.bulkCreate(data.users);
             await kleerkast.bulkCreate(data.kleerkasten);
             await kledingstuk.bulkCreate(data.kledingstukken);
+           
         });
         afterAll(async () => {
             await kledingstuk.destroy({where:{kledingstukId:dataToDelete.kledingstukken}});

@@ -159,62 +159,28 @@ describe('users', () => {
             expect(response.status).toBe(404);
         });
     });
-    // describe('POST /api/users', () => {
-    //     let usersToDelete = [];
-    //     beforeAll(async () => {
-    //         await user.bulkCreate(data.users);
-    //         await kleerkast.bulkCreate(data.kleerkasten);
-    //         await kledingstuk.bulkCreate(data.kledingstukken);
-    //     });
-    //     afterAll(async () => {
-    //         await user.destroy({where: {userId: dataToDelete.users}});
-    //         await user.destroy({where: {userId: usersToDelete}});
-    //         await kleerkast.destroy({where: {kleerkastId: dataToDelete.kleerkasten}});
-    //         await kledingstuk.destroy({where: {kledingstukId: dataToDelete.kledingstukken}});
-    //     });
-    //     it('should return 201 and user', async () => {
-    //         const response = await request.post(url).send({
-    //             username: 'test3',
-    //             password: 'test3',
-    //             email: 'test3@gmail.com',
-    //         }).set('Authorization', authHeader);
-    //         expect(response.status).toBe(201);
-    //         expect(response.body.username).toBe('test3');
-    //         expect(response.body.password).toBe('test3');
-    //         expect(response.body.email).toBe('test3@gmail.com');
-    //         expect(response.body.userId).toBeTruthy();
-    //         usersToDelete.push(response.body.userId).set('Authorization', authHeader);
-    //     });
-    //     it('should return 400 when username is missing', async () => {
-    //         const response = await request.post(url).send({
-    //             password: 'test3',
-    //             email: 'test3@gmail.com',
-    //         }).set('Authorization', authHeader);
-    //         expect(response.status).toBe(400);
-    //     });
-    //     it('should return 400 when password is missing', async () => {
-    //         const response = await request.post(url).send({
-    //             username: 'test3',
-    //             email: 'test3@gmail.com',
-    //         });
-    //         expect(response.status).toBe(400);
-    //     });
-    //     it('should return 400 when email is missing', async () => {
-    //         const response = await request.post(url).send({
-    //             username: 'test3',
-    //             password: 'test3',
-    //         });
-    //         expect(response.status).toBe(400);
-    //     });
-    //     it('should return 400 when email is not unique', async () => {
-    //         const response = await request.post(`${url}`).send({
-    //             username: 'gewijzigd',
-    //             password: 'gewijzigd',
-    //             email: 'test2@gmail.com',
-    //         });
-    //         expect(response.status).toBe(400);
-    //     });
-    // });
+    describe('POST /api/users', () => {
+        let usersToDelete = [];
+        
+        afterAll(async () => {
+            await user.destroy({where: {userId: usersToDelete}});
+        });
+        it('should return 201 and user', async () => {
+            const response = await request.post(url).send({
+                username: process.env.AUTH_TEST_USER_USERNAME,
+                auth0id: process.env.AUTH_TEST_USER_USER_ID,
+            }).set('Authorization', authHeader);
+            expect(response.status).toBe(201);
+            expect(response.body).toBeTruthy();
+            usersToDelete.push(response.body);
+        });
+        it('should return 400 when username is missing', async () => {
+            const response = await request.post(url).send({
+                auth0id: process.env.AUTH_TEST_USER_USER_ID,
+            }).set('Authorization', authHeader);
+            expect(response.status).toBe(400);
+        });
+    });
     describe('PUT /api/users/:userId', () => {
         beforeAll(async () => {
             await user.bulkCreate(data.users);

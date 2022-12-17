@@ -109,6 +109,8 @@ Een gebruiker kan kleerkasten en kledingstukken toevoegen en kan zo kijken in we
 
 > Hoe heb je jouw applicatie gestructureerd (mappen, design patterns, hiërarchie van componenten, state...)?
 
+Ik heb ervoor gezorgd dat alle files die code bevatten voor de werking van de api zich bevinden in de src folder en dat config files, testen en dergelijke zich erbuiten bevinden. Binnen de src folder heb ik files onderverdeeld in aparte lagen: de restlaag, de servicelaag en de datalaag.
+
 ### Web Services
 
 > Hoe heb je jouw applicatie gestructureerd (mappen, design patterns...)?

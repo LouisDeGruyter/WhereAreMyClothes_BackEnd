@@ -10,7 +10,7 @@ const koaCors = require('@koa/cors');
 const emoji = require('node-emoji');
 const ServiceError = require('./core/serviceError');
 const { serializeError } = require('serialize-error');
-const db = require('../models')
+const db = require('./data/models')
 const {checkJwtToken} = require('./core/auth');
 
 

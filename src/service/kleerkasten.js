@@ -1,5 +1,5 @@
  const {getLogger} = require('../core/logging');
- const {models:{kleerkast,user}} = require('../../models');
+ const {models:{kleerkast,user}} = require('../data/models');
  const ServiceError = require('../core/serviceError');
 
  //ophalen van alle kleerkasten

@@ -2,11 +2,11 @@ const Sequelize = require('sequelize');
 const fs = require('fs');
 const process = require('process');
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.js')[env];
+const config = require(__dirname + '/../../../config/config.js')[env];
 const config2= require('config');
 const {
   getLogger
-} = require('../src/core/logging');
+} = require('../../core/logging');
 const force= config2.get('initialezeDatabaseParameters.force');
 const alter= config2.get('initialezeDatabaseParameters.alter');
 let sequelize;

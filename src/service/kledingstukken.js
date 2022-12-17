@@ -1,5 +1,5 @@
 const {getLogger} = require('../core/logging');
-const {models:{kledingstuk,user,kleerkast}} = require('../../models');
+const {models:{kledingstuk,kleerkast}} = require('../data/models');
 const ServiceError = require('../core/serviceError');
 const debugLog = (message, meta = {}) => {
     if(!this.logger) this.logger= getLogger();

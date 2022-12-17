@@ -1,5 +1,5 @@
 const {getLogger} = require('../core/logging');
-const {models:{user,kleerkast,kledingstuk}} = require('../../models');
+const {models:{user,kleerkast,kledingstuk}} = require('../data/models');
 const ServiceError = require('../core/serviceError');
 
 const getAllUsers= async ()=>{

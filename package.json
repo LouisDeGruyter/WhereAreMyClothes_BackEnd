@@ -17,9 +17,11 @@
   "scripts": {
     "start": "npx env-cmd nodemon src/index.js",
     "start:prod": "node src/index.js",
+    "seed:prepare": "sequelize db:drop && sequelize db:create && yarn start",
     "seed": "sequelize db:seed --seed 202211271307_users && sequelize db:seed --seed 20221127121254-kleerkasten && sequelize db:seed --seed 20221127121542-kledingstukken",
     "test": "npx env-cmd -f .env.test jest --runInBand",
-    "test:coverage": "yarn test --coverage"
+    "test:coverage": "yarn test --coverage",
+    "migrate": "sequelize db:migrate"
   },
   "dependencies": {
     "@koa/cors": "^4.0.0",

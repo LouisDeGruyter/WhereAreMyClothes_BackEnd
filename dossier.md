@@ -11,10 +11,8 @@
 
 **Logingegevens**
 
-- Gebruikersnaam/e-mailadres: 
-- Wachtwoord:
-
-> Vul eventueel aan met extra accounts voor administrators of andere rollen.
+- e-mailadres: demo@gmail.be
+- Wachtwoord: Demo@mail
 
 ## Projectbeschrijving
 

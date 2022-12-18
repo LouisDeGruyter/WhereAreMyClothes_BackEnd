@@ -4,7 +4,7 @@ module.exports = {
         disabled: false,
     },
     cors:{
-        origins: ['https://wherearemyclothes.onrender.com'],
+        origins: ['https://wherearemyclothes.onrender.com','http://localhost:3000'],
         maxAge: 3*60*60,
     },
     initialezeDatabaseParameters:{

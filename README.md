@@ -7,7 +7,7 @@
 
 ## Opstarten
 1) Maak .env bestand aan met volgende variabelen:
-NODE_ENV=development
+- NODE_ENV=development
 DATABASE_USERNAME="180978ld"
 DATABASE_PASSWORD="sfhay2uXYVZarLqM3fv9"
 DATABASE_NAME="180978ld"

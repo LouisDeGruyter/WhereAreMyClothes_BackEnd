@@ -17,20 +17,20 @@
 ## Projectbeschrijving
 
 Een gebruiker kan kleerkasten en kledingstukken toevoegen en kan zo kijken in welke kleerkast welke kledingstukken zich bevinden. Kan bijvoorbeeld gebruikt worden door een student die wilt weten welke kleren hij nog moet meenemen naar kot.
-![eerd](/images/eerd.png)
+![eerd](./images/eerd.png)
 ## Screenshots
 
 - Een lijst van al je kledingstukken, waarin je kan zoeken achter een specifiek kledingstuk om meer informatie er over te weten te komen, zoals in welke kleerkast het zich bevindt.
-![kledinglijst](/images/KledinglijstZoek.png)
+![kledinglijst](./images/KledinglijstZoek.png)
 - Een lijst van al je kleerkasten, waar je kan zien welke kledingstukken in een kleerkast zitten.
-![kleerkastenlijst](/images/kleerkastenlijst.png)
+![kleerkastenlijst](./images/kleerkastenlijst.png)
 - Een pagina waarin alle info van een specifiek kledingstuk, wordt getoond met alle mogelijk acties die je kunt toepassen op dat kledingstuk, zoals het kledingstuk verplaatsen naar een andere kleerkast.
-![updateKleerkast](/images/wijzigKleerkast.png)
+![updateKleerkast](./images/wijzigKleerkast.png)
 -Een form waarin je een nieuw kledingstuk kan aanmaken of een bestaand kledingstuk kan wijzigen.
-![wijzigKledingstuk](/images/updateKledingstuk.png)
+![wijzigKledingstuk](./images/updateKledingstuk.png)
 
 - Een form waarin je een kleerkast kan aanmaken of een bestaande kleerkast kan wijzigen
-![voegKleerkastToe](/images/kleerkastToevoegen.png)
+![voegKleerkastToe](./images/kleerkastToevoegen.png)
 ## Behaalde minimumvereisten
 
 
@@ -113,7 +113,6 @@ Een gebruiker kan kleerkasten en kledingstukken toevoegen en kan zo kijken in we
 
 ### Front-end Web Development
 
-> Hoe heb je jouw applicatie gestructureerd (mappen, design patterns, hiërarchie van componenten, state...)?
 Alle files die code bevatten om de website op te bouwen bevinden zich in de src folder, dus testen en .env files bevinden zich buiten de src folder, binnen de src folder heb ik files gegroepeerd per functie; files die zorgen voor de connectie met de api in een aparte folder en componenten apart. Binnen de componenten folder zijn de files ook nog eens gegroepeerd per route; de componenten die bijvoorbeeld de route /kledingstukken opbouwen staan in een aparte map.
 
 ### Web Services
@@ -144,8 +143,8 @@ Er wordt getest of de applicatie draait, of je kleerkasten en kledingstukkken ka
 Voor Users, kleerkasten en kledingstukken wordt telkens het opvragen van alles, het opvragen bij id, het updaten, het verwijderen en het aanmaken gecontroleerd. Bij kledingstukken wordt ook nog het opvragen van de user of kleerkast waartoe het behoort gecontroleerd. Bij kleerkasten wordt ook gecontroleerd bij welke user het hoort en welke kledingstukken het bezit.
 Bij de users wordt ook nog eens gecontroleerd welke kledingstukken en kleerkasten het bezit
 
-![coverage](/images/coverage.png)
-![uitvoering](/images/test.png)
+![coverage](./images/coverage.png)
+![uitvoering](./images/test.png)
 ## Gekende bugs
 
 ### Front-end Web Development

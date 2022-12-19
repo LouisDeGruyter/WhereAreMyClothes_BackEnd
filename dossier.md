@@ -20,11 +20,19 @@ Een gebruiker kan kleerkasten en kledingstukken toevoegen en kan zo kijken in we
 ![eerd](/images/eerd.png)
 ## Screenshots
 
-> Voeg enkele (nuttige!) screenshots toe die tonen wat de app doet.
+- Een lijst van al je kledingstukken, waarin je kan zoeken achter een specifiek kledingstuk om meer informatie er over te weten te komen, zoals in welke kleerkast het zich bevindt.
+![kledinglijst](/images/KledinglijstZoek.png)
+- Een lijst van al je kleerkasten, waar je kan zien welke kledingstukken in een kleerkast zitten.
+![kleerkastenlijst](/images/kleerkastenlijst.png)
+- Een pagina waarin alle info van een specifiek kledingstuk, wordt getoond met alle mogelijk acties die je kunt toepassen op dat kledingstuk, zoals het kledingstuk verplaatsen naar een andere kleerkast.
+![updateKleerkast](/images/wijzigKleerkast.png)
+-Een form waarin je een nieuw kledingstuk kan aanmaken of een bestaand kledingstuk kan wijzigen.
+![wijzigKledingstuk](/images/updateKledingstuk.png)
 
+- Een form waarin je een kleerkast kan aanmaken of een bestaande kleerkast kan wijzigen
+![voegKleerkastToe](/images/kleerkastToevoegen.png)
 ## Behaalde minimumvereisten
 
-> Duid per vak aan welke minimumvereisten je denkt behaald te hebben
 
 ### Front-end Web Development
 
@@ -106,18 +114,18 @@ Een gebruiker kan kleerkasten en kledingstukken toevoegen en kan zo kijken in we
 ### Front-end Web Development
 
 > Hoe heb je jouw applicatie gestructureerd (mappen, design patterns, hiërarchie van componenten, state...)?
-
-Ik heb ervoor gezorgd dat alle files die code bevatten voor de werking van de api zich bevinden in de src folder en dat config files, testen en dergelijke zich erbuiten bevinden. Binnen de src folder heb ik files onderverdeeld in aparte lagen: de restlaag, de servicelaag en de datalaag.
+Alle files die code bevatten om de website op te bouwen bevinden zich in de src folder, dus testen en .env files bevinden zich buiten de src folder, binnen de src folder heb ik files gegroepeerd per functie; files die zorgen voor de connectie met de api in een aparte folder en componenten apart. Binnen de componenten folder zijn de files ook nog eens gegroepeerd per route; de componenten die bijvoorbeeld de route /kledingstukken opbouwen staan in een aparte map.
 
 ### Web Services
+Ik heb ervoor gezorgd dat alle files die code bevatten voor de werking van de api zich bevinden in de src folder en dat config files, testen en dergelijke zich erbuiten bevinden. Binnen de src folder heb ik files onderverdeeld in aparte lagen: de restlaag, de servicelaag en de datalaag.
 
-> Hoe heb je jouw applicatie gestructureerd (mappen, design patterns...)?
 
 ## Extra technologie
 
 ### Front-end Web Development
 
-> Wat is de extra technologie? Hoe werkt het? Voeg een link naar het npm package toe!
+
+De extra technologie is [Ant design](https://github.com/ant-design/ant-design), ant Design is een open-source React UI-bibliotheek. Het bevat vele UI-componenten zoals knoppen, formulieren, tabellen en navigatiemenu's.
 
 ### Web Services
 
@@ -128,11 +136,11 @@ De extra technologie is [Sequelize](https://github.com/sequelize/sequelize), Seq
 
 ### Front-end Web Development
 
-> Schrijf hier een korte oplijsting en beschrijving van de geschreven testen
+
+Er wordt getest of de applicatie draait, of je kleerkasten en kledingstukkken kan toevoegen en verwijderen, of het overzicht van kledingstukken werkt en of het laadscherm enkel zichtbaar is tijdens het laden.
 
 ### Web Services
 
-> Schrijf hier een korte oplijsting en beschrijving van de geschreven testen + voeg een screenshot van de coverage en uitvoering toe
 Voor Users, kleerkasten en kledingstukken wordt telkens het opvragen van alles, het opvragen bij id, het updaten, het verwijderen en het aanmaken gecontroleerd. Bij kledingstukken wordt ook nog het opvragen van de user of kleerkast waartoe het behoort gecontroleerd. Bij kleerkasten wordt ook gecontroleerd bij welke user het hoort en welke kledingstukken het bezit.
 Bij de users wordt ook nog eens gecontroleerd welke kledingstukken en kleerkasten het bezit
 
@@ -146,14 +154,3 @@ Geen gekende bugs
 ### Web Services
 Geen gekende bugs
 
-## Wat is er verbeterd/aangepast?
-
-> Deze sectie is enkel voor 2e zittijd, verwijder deze in 1e zittijd.
-
-### Front-end Web Development
-
-- Dit en dat
-
-### Web Services
-
-- Oh en dit ook

@@ -5,7 +5,9 @@ const installUserRouter = require('./_users');
 const Router = require('@koa/router');
 
 module.exports = (app) => {
-    const router = new Router({ prefix: '/api'});
+    const router = new Router({
+        prefix: '/api'
+    });
     installKledingstukRouter(router);
     installKleerkastRouter(router);
     installHealthRouter(router);

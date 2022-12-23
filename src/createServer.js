@@ -1,7 +1,7 @@
 const Koa = require('koa');
 const {
-    initializeLogger,
-    getLogger
+	initializeLogger,
+	getLogger
 } = require('./core/logging');
 const config = require('config');
 const bodyParser = require('koa-bodyparser');
@@ -9,9 +9,13 @@ const installRest = require('./rest/index');
 const koaCors = require('@koa/cors');
 const emoji = require('node-emoji');
 const ServiceError = require('./core/serviceError');
-const { serializeError } = require('serialize-error');
+const {
+	serializeError
+} = require('serialize-error');
 const db = require('./data/models')
-const {checkJwtToken} = require('./core/auth');
+const {
+	checkJwtToken
+} = require('./core/auth');
 
 
 const NODE_ENV = config.get('env');
@@ -22,48 +26,48 @@ const CORS_MAX_AGE = config.get('cors.maxAge');
 const app = new Koa();
 
 module.exports = async function createServer() {
-    initializeLogger({
-        level: LOG_LEVEL,
-        disabled: LOG_DISABLED,
-        defaultMeta: {
-            NODE_ENV
-        },
-    });
+	initializeLogger({
+		level: LOG_LEVEL,
+		disabled: LOG_DISABLED,
+		defaultMeta: {
+			NODE_ENV
+		},
+	});
 
 
 
-  
 
-    //database
-   await db.functions.initializeData();
 
-    const logger = getLogger();
-    app.use(
-        koaCors({
-            origin: (ctx) => {
-                if (CORS_ORIGINS.indexOf(ctx.request.header.origin) !== -1) {
-                    return ctx.request.header.origin;
-                }
-                // Not a valid domain at this point, let's return the first valid as we should return a string
-                return CORS_ORIGINS[0];
-            },
-            allowHeaders: ['Accept', 'Content-Type', 'Authorization'],
-            maxAge: CORS_MAX_AGE,
-        })
-    );
+	//database
+	await db.functions.initializeData();
+
+	const logger = getLogger();
+	app.use(
+		koaCors({
+			origin: (ctx) => {
+				if (CORS_ORIGINS.indexOf(ctx.request.header.origin) !== -1) {
+					return ctx.request.header.origin;
+				}
+				// Not a valid domain at this point, let's return the first valid as we should return a string
+				return CORS_ORIGINS[0];
+			},
+			allowHeaders: ['Accept', 'Content-Type', 'Authorization'],
+			maxAge: CORS_MAX_AGE,
+		})
+	);
 	app.use(checkJwtToken());
-	app.use(async(ctx, next) => {
+	app.use(async (ctx, next) => {
 		logger.debug(`token : ${ctx.headers.authorization}`);
 		logger.debug(`current user: ${JSON.stringify(ctx.state.user)}`);
 		logger.debug(`error in token: ${ctx.state.jwtOriginalError}`)
 		await next();
 	});
 
-    app.use(bodyParser());
-    app.use(async (ctx, next) => {	//request logging
+	app.use(bodyParser());
+	app.use(async (ctx, next) => { //request logging
 		const logger = getLogger();
 		logger.info(`${emoji.get('fast_forward')} ${ctx.method} ${ctx.url}`);
-	
+
 		const getStatusEmoji = () => {
 			if (ctx.status >= 500) return emoji.get('skull');
 			if (ctx.status >= 400) return emoji.get('x');
@@ -71,10 +75,10 @@ module.exports = async function createServer() {
 			if (ctx.status >= 200) return emoji.get('white_check_mark');
 			return emoji.get('rewind');
 		};
-	
+
 		try {
 			await next();
-	
+
 			logger.info(
 				`${getStatusEmoji()} ${ctx.method} ${ctx.status} ${ctx.url}`,
 			);
@@ -82,11 +86,11 @@ module.exports = async function createServer() {
 			logger.error(`${emoji.get('x')} ${ctx.method} ${ctx.status} ${ctx.url}`, {
 				error,
 			});
-	
+
 			throw error;
 		}
 	});
-    app.use(async (ctx, next) => {
+	app.use(async (ctx, next) => {
 		try {
 			await next();
 
@@ -95,7 +99,7 @@ module.exports = async function createServer() {
 					code: 'NOT_FOUND',
 					message: `Unknown resource: ${ctx.url}`,
 				};
-                ctx.status=404;
+				ctx.status = 404;
 			}
 		} catch (error) {
 			const logger = getLogger();
@@ -135,35 +139,35 @@ module.exports = async function createServer() {
 	});
 
 
-    installRest(app);
+	installRest(app);
 
 
-    return {
-        getApp() {
-            return app;
-        },
-        start() {
-            return new Promise((resolve) => {
+	return {
+		getApp() {
+			return app;
+		},
+		start() {
+			return new Promise((resolve) => {
 
 				if (NODE_ENV === 'production') {
 					const port = config.get('port');
-                app.listen(port);
-                logger.info(`Server started on port ${port}}`);
+					app.listen(port);
+					logger.info(`Server started on port ${port}}`);
 				} else {
 					app.listen(9000);
 					logger.info('Server started on port 9000');
 				}
 
-				
-                resolve()
-            });
-        },
 
-        async stop() {
-            app.removeAllListeners();
-            await db.functions.shutdownData();
-            getLogger().info('Goodbye');
-        }
-    };
-    
+				resolve()
+			});
+		},
+
+		async stop() {
+			app.removeAllListeners();
+			await db.functions.shutdownData();
+			getLogger().info('Goodbye');
+		}
+	};
+
 }

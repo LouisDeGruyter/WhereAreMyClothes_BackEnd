@@ -1,5 +1,7 @@
 'use strict';
-const {faker} = require('@faker-js/faker');
+const {
+    faker
+} = require('@faker-js/faker');
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
@@ -11,11 +13,8 @@ module.exports = {
             });
         }
         return queryInterface.bulkInsert('Users', users);
-    }
-    ,
+    },
     down: async (queryInterface, Sequelize) => {
         return queryInterface.bulkDelete('Users', null, {});
     }
 };
-
-    

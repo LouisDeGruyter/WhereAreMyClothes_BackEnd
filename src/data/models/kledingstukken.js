@@ -23,13 +23,12 @@ module.exports = (sequelize, DataTypes) => {
         size: {
             type: DataTypes.INTEGER,
             allowNull: false,
-      
+
         },
-    },
-        {
-            freezeTableName: true,
-            timestamps: false,
-        });
-        
+    }, {
+        freezeTableName: true,
+        timestamps: false,
+    });
+
     return Kledingstuk;
 };

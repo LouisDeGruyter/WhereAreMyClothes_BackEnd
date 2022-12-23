@@ -2,21 +2,24 @@ const jwksrsa = require('jwks-rsa');
 const config = require('config');
 const jwt = require('koa-jwt');
 const axios = require('axios');
-const { getLogger } = require('./logging');
+const {
+  getLogger
+} = require('./logging');
 
 const AUTH_USER_INFO = config.get('auth.userInfo');
+
 function getJwtSecret() {
   try {
     let secretFunction = jwksrsa.koaJwtSecret({
       jwksUri: config.get('auth.jwksUri'), // 👈
       cache: true,
       cacheMaxEntries: 5,
-  });
-  return secretFunction;
- } catch (error) {
-  console.error(error);
-  throw error;
- }
+    });
+    return secretFunction;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 function checkJwtToken() {
@@ -38,31 +41,31 @@ function checkJwtToken() {
   }
 }
 async function addUserInfo(ctx) {
-    const logger = getLogger();
-    try {
-      const token = ctx.headers.authorization;
-      const url = AUTH_USER_INFO;
-      if (token && url && ctx.state.user) {
-        logger.debug(`addUserInfo: ${url}, ${JSON.stringify(token)}`);
-  
-        const userInfo = await axios.get(url, {
-          headers: {
-            Authorization: token,
-          },
-        });
-  
-        ctx.state.user = {
-          ...ctx.state.user,
-          ...userInfo.data,
-        };
-      }
-    } catch (error) {
-      logger.error(error);
-      throw error;
+  const logger = getLogger();
+  try {
+    const token = ctx.headers.authorization;
+    const url = AUTH_USER_INFO;
+    if (token && url && ctx.state.user) {
+      logger.debug(`addUserInfo: ${url}, ${JSON.stringify(token)}`);
+
+      const userInfo = await axios.get(url, {
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      ctx.state.user = {
+        ...ctx.state.user,
+        ...userInfo.data,
+      };
     }
+  } catch (error) {
+    logger.error(error);
+    throw error;
   }
+}
 
 module.exports = {
- checkJwtToken, addUserInfo
+  checkJwtToken,
+  addUserInfo
 };
-

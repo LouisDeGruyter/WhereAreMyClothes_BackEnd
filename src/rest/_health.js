@@ -2,15 +2,17 @@ const healthService = require('../service/health');
 const Router = require('@koa/router');
 const Joi = require('joi');
 
-const ping = async(ctx) => {
+const ping = async (ctx) => {
     ctx.body = healthService.ping();
 };
-const getVersion = async(ctx) => {
+const getVersion = async (ctx) => {
     ctx.body = healthService.getVersion();
 };
 
 module.exports = (app) => {
-    const router = new Router({ prefix: '/health'});
+    const router = new Router({
+        prefix: '/health'
+    });
     router.get('/ping', ping);
     router.get('/version', getVersion);
     app.use(router.routes()).use(router.allowedMethods());

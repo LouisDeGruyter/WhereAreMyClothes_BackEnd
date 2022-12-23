@@ -3,12 +3,12 @@ const fs = require('fs');
 const process = require('process');
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../../../config/config.js')[env];
-const config2= require('config');
+const config2 = require('config');
 const {
   getLogger
 } = require('../../core/logging');
-const force= config2.get('initialezeDatabaseParameters.force');
-const alter= config2.get('initialezeDatabaseParameters.alter');
+const force = config2.get('initialezeDatabaseParameters.force');
+const alter = config2.get('initialezeDatabaseParameters.alter');
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
@@ -21,7 +21,7 @@ db.models = {};
 db.models.user = require('./users')(sequelize, Sequelize.DataTypes);
 db.models.kledingstuk = require('./kledingstukken')(sequelize, Sequelize.DataTypes);
 db.models.kleerkast = require('./kleerkasten')(sequelize, Sequelize.DataTypes);
-db.functions={};
+db.functions = {};
 
 
 const debugLog = (message, meta = {}) => {
@@ -43,19 +43,33 @@ const user = db.models.user;
 const kledingstuk = db.models.kledingstuk;
 const kleerkast = db.models.kleerkast;
 
-kleerkast.hasMany(kledingstuk, { foreignKey: 'kleerkastId' , as:"kledingstukken", onDelete: 'cascade'});
+kleerkast.hasMany(kledingstuk, {
+  foreignKey: 'kleerkastId',
+  as: "kledingstukken",
+  onDelete: 'cascade'
+});
 
-user.hasMany(kleerkast, { foreignKey: 'userId' ,as:"kleerkasten", onDelete: 'CASCADE'});
-kleerkast.belongsTo(user, { foreignKey: 'userId' ,as:"user"});
-kledingstuk.belongsTo(kleerkast, { foreignKey: 'kleerkastId' ,as:"kleerkast"});
+user.hasMany(kleerkast, {
+  foreignKey: 'userId',
+  as: "kleerkasten",
+  onDelete: 'CASCADE'
+});
+kleerkast.belongsTo(user, {
+  foreignKey: 'userId',
+  as: "user"
+});
+kledingstuk.belongsTo(kleerkast, {
+  foreignKey: 'kleerkastId',
+  as: "kleerkast"
+});
 
 
-async function shutdownData(){
+async function shutdownData() {
   await sequelize.close();
   debugLog('database connection closed');
 }
-db.functions.initializeData=initializeData;
-db.functions.shutdownData=shutdownData;
+db.functions.initializeData = initializeData;
+db.functions.shutdownData = shutdownData;
 
 
 

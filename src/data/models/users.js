@@ -8,15 +8,14 @@ module.exports = (sequelize, DataTypes) => {
         username: {
             type: DataTypes.STRING,
             allowNull: false,
-            
+
         },
         auth0id: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
         },
-    },
-    {
+    }, {
         freezeTableName: true,
         timestamps: false,
     });

@@ -13,6 +13,7 @@ A user can add wardrobes and clothing items, and can check in which wardrobe eac
 
 The application is built using the following technologies:
 
+- Node.js
 - JavaScript
 - Koa
 - Auth0
